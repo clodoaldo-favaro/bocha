@@ -32,6 +32,14 @@ void start_game()  {
 
     system("cls");
     char cancha[TAMANHO][TAMANHO]; /*DECLARA A CANCHA*/
+    int i, max_colunas;
+    char alfabeto_colunas[23];
+    /*Declara o alfabeto permitido para a cancha*/
+    for(i = 65, max_colunas = 0; i < 65 + TAMANHO; i++) {
+        alfabeto_colunas[max_colunas] = (char)i;
+        max_colunas++;
+    }
+
     inicializa_cancha(TAMANHO, cancha);
     lanca_bolim(TAMANHO, cancha);
     /*partida(TAMANHO, cancha);*/
@@ -91,13 +99,18 @@ void movimenta_ponto(int n, char cancha[n][n], char c, int row, int col) {
 }
 
 void partida() {
-
+    //TODO
+    int duracao = 4, jogadas = 0;
+    while(jogadas < duracao) {
+        printf("Jogador A\n");
+        char *alvo = jogada();
+    }
 
 
 }
 
 char *jogada() {
-
+    //TODO
     char joga[2] = {'-'};
     char letra = toupper(joga[0]);
     char numero = joga[1];
