@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1505175452 source:c:\users\ucs\bocha\jogo.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	"lib.h"
+
+1505177579 c:\users\ucs\bocha\lib.h
+	<stdlib.h>
+
