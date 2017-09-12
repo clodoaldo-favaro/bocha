@@ -14,7 +14,8 @@
 	<time.h>
 	"lib.h"
 
-1505240264 c:\users\imagem\downloads\bocha\bocha\lib.h
+1505243787 c:\users\imagem\downloads\bocha\bocha\lib.h
 	<stdlib.h>
+	<ctype.h>
 	<windows.h>
 

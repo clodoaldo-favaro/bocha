@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <ctype.h>
 #define TAMANHO 10
 #include <windows.h>
 void start_screen();
@@ -7,6 +8,8 @@ void lanca_bolim(int n, char cancha[n][n]);
 void mostra_cancha(int n, char cancha[n][n]);
 void inicializa_cancha(int n, char cancha[n][n]);
 void movimenta_ponto(int n, char cancha[n][n], char c, int row, int col);
+int calcula_erro(int linha_col);
+void partida();
 
 
 
@@ -28,9 +31,10 @@ void start_screen() {
 void start_game()  {
 
     system("cls");
-    char cancha[TAMANHO][TAMANHO];
+    char cancha[TAMANHO][TAMANHO]; /*DECLARA A CANCHA*/
     inicializa_cancha(TAMANHO, cancha);
     lanca_bolim(TAMANHO, cancha);
+    /*partida(TAMANHO, cancha);*/
     system("pause");
 
 
@@ -82,6 +86,43 @@ void movimenta_ponto(int n, char cancha[n][n], char c, int row, int col) {
         Sleep(300);
         cancha[i][col] = bolim;
         cancha[i + 1][col] = '0';
+    }
+
+}
+
+void partida() {
+
+
+
+}
+
+char *jogada() {
+
+    char joga[2] = {'-'};
+    char letra = toupper(joga[0]);
+    char numero = joga[1];
+    while(!isalpha(letra) && !isdigit(numero)) {
+        printf("Selecione onde deseja jogar\n");
+        scanf("%2s", joga);
+        char letra = toupper(joga[0]);
+        char numero = joga[1];
+
+    }
+
+
+}
+
+int calcula_erro(int linha_col) {
+    /*linha_col == 1, erro de linha*/
+    /*linha_col == 2, erro de coluna*/
+    int erro_linha[] = {-2, -1, 0, 1, 2};
+    int erro_coluna[] = {-1, 0, 1};
+    if(linha_col == 1) {
+        return erro_linha[rand() % 5];
+    } else if (linha_col == 2){
+        return erro_coluna[rand() % 3];
+    } else {
+        return 0;
     }
 
 }
