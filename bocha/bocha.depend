@@ -8,3 +8,13 @@
 1505177579 c:\users\ucs\bocha\lib.h
 	<stdlib.h>
 
+1505238513 source:c:\users\imagem\downloads\bocha\bocha\jogo.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	"lib.h"
+
+1505240264 c:\users\imagem\downloads\bocha\bocha\lib.h
+	<stdlib.h>
+	<windows.h>
+
