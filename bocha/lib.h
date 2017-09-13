@@ -9,7 +9,9 @@ void mostra_cancha(int n, char cancha[n][n]);
 void inicializa_cancha(int n, char cancha[n][n]);
 void movimenta_ponto(int n, char cancha[n][n], char c, int row, int col);
 int calcula_erro(int linha_col);
-void partida();
+void partida(int n, char cancha[n][n], char alfabeto[n]);
+char *jogada(char alfabeto[TAMANHO], char cancha[TAMANHO][TAMANHO]);
+int valida_jogada(char jogada[3], char alfabeto[TAMANHO]);
 
 
 
@@ -32,17 +34,16 @@ void start_game()  {
 
     system("cls");
     char cancha[TAMANHO][TAMANHO]; /*DECLARA A CANCHA*/
-    int i, max_colunas;
-    char alfabeto_colunas[23];
+    int i;
+    char alfabeto[TAMANHO];
     /*Declara o alfabeto permitido para a cancha*/
-    for(i = 65, max_colunas = 0; i < 65 + TAMANHO; i++) {
-        alfabeto_colunas[max_colunas] = (char)i;
-        max_colunas++;
+    for(i = 65; i < 65 + TAMANHO; i++) {
+        alfabeto[i - 65] = (char)i;
     }
 
     inicializa_cancha(TAMANHO, cancha);
     lanca_bolim(TAMANHO, cancha);
-    /*partida(TAMANHO, cancha);*/
+    partida(TAMANHO, cancha, alfabeto);
     system("pause");
 
 
@@ -51,10 +52,15 @@ void start_game()  {
 
 
 void lanca_bolim(int n, char cancha[n][n]) {
-    int col, row;
+    int col = 0, row = 0;
     char bolim = 'X';
-    col = rand() % n;
-    row = rand() % n;
+    while(col == n || col < 1)  {
+        col = rand() % n;
+    }
+    while(row > n/2 || row == 0) {
+        row = rand() % n;
+    }
+
     movimenta_ponto(n, cancha, bolim, row, col);
 
 
@@ -63,14 +69,24 @@ void lanca_bolim(int n, char cancha[n][n]) {
 void mostra_cancha(int n, char cancha[n][n]) {
     system("cls");
     int i, j;
-    printf("\n\n\n");
+    printf("\n\n");
+    printf("%25c", ' ');
+    /*Mostra as letras*/
     for(i = 0; i < n; i++) {
-        printf("%25c", ' ');
+        printf("%3c", 65 + i);
+    }
+    printf("\n\n");
+    for(i = 0; i < n; i++) {
+        printf("%22d%3c", i, ' ');
         for(j = 0; j < n; j++) {
             printf("%3c", cancha[i][j]);
         }
         printf("\n");
     }
+
+
+    printf("\n\n");
+
 
 }
 
@@ -78,7 +94,7 @@ void inicializa_cancha(int n, char cancha[n][n]) {
     int i, j;
     for(i = 0; i < TAMANHO; i++) {
         for(j = 0; j < TAMANHO; j++) {
-            cancha[i][j] = '0';
+            cancha[i][j] = '-';
         }
     }
 }
@@ -93,36 +109,67 @@ void movimenta_ponto(int n, char cancha[n][n], char c, int row, int col) {
         mostra_cancha(TAMANHO, cancha);
         Sleep(300);
         cancha[i][col] = bolim;
-        cancha[i + 1][col] = '0';
+        cancha[i + 1][col] = '-';
     }
 
 }
 
-void partida() {
+void partida(int n, char cancha[n][n], char alfabeto[TAMANHO]) {
     //TODO
-    int duracao = 4, jogadas = 0;
+    int duracao = 8, jogadas = 0;
+    int pontos[2] = {0};
+    char *alvo;
     while(jogadas < duracao) {
         printf("Jogador A\n");
-        char *alvo = jogada();
+        alvo = jogada(alfabeto, cancha);
+        printf("Você jogou no %s\n", alvo);
+        jogadas++;
+        free(alvo);
     }
 
 
 }
 
-char *jogada() {
+char *jogada(char alfabeto[TAMANHO], char cancha[TAMANHO][TAMANHO]) {
     //TODO
-    char joga[2] = {'-'};
-    char letra = toupper(joga[0]);
-    char numero = joga[1];
-    while(!isalpha(letra) && !isdigit(numero)) {
-        printf("Selecione onde deseja jogar\n");
-        scanf("%2s", joga);
-        char letra = toupper(joga[0]);
-        char numero = joga[1];
+    char *jogada = malloc(sizeof(char) * 3);
+    int pedir = 1;
+    while(pedir) {
+        printf("\nSelecione onde deseja jogar\n");
+        scanf("%2s", jogada);
+        /*TESTES*/
+        if(valida_jogada(jogada, alfabeto)) {
+            pedir = 0;
+        } else {
+            system("pause");
+            mostra_cancha(TAMANHO, cancha);
+        }
 
     }
+    return jogada;
 
 
+}
+
+int valida_jogada(char jogada[3], char alfabeto[TAMANHO]) {
+
+    if(!isalpha(jogada[0])) {
+        printf("Primeiro digito não é letra\n");
+        return 0;
+    }
+    if(jogada[0] < alfabeto[0] || jogada[0] > alfabeto[TAMANHO - 1]) {
+        printf("Primeiro digito fora dos limites das colunas\n");
+        return 0;
+    }
+    if(!isdigit(jogada[1])) {
+        printf("Segundo dígito não é número\n");
+        return 0;
+    }
+    if((jogada[1] - '0') < 0 || (jogada[1] - '0') > TAMANHO) {
+        printf("Segundo dígito fora do limite\n");
+        return 0;
+    }
+    return 1;
 }
 
 int calcula_erro(int linha_col) {
