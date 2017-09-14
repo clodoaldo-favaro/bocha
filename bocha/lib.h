@@ -10,7 +10,7 @@ void inicializa_cancha(int n, char cancha[n][n]);
 void movimenta_ponto(int n, char cancha[n][n], char c, int row, int col);
 int calcula_erro(int linha_col);
 void partida(int n, char cancha[n][n], char alfabeto[n]);
-char *jogada(char alfabeto[TAMANHO], char cancha[TAMANHO][TAMANHO]);
+char *jogada(char alfabeto[TAMANHO], char cancha[TAMANHO][TAMANHO], char jogador);
 int valida_jogada(char jogada[3], char alfabeto[TAMANHO]);
 
 
@@ -119,10 +119,13 @@ void partida(int n, char cancha[n][n], char alfabeto[TAMANHO]) {
     int duracao = 8, jogadas = 0;
     int pontos[2] = {0};
     char *alvo;
+    char jogador_atual = 'B';
     while(jogadas < duracao) {
-        printf("Jogador A\n");
-        alvo = jogada(alfabeto, cancha);
+        (jogador_atual == 'A') ? (jogador_atual = 'B') : (jogador_atual = 'A');
+        alvo = jogada(alfabeto, cancha, jogador_atual);
         printf("Você jogou no %s\n", alvo);
+        system("pause");
+        mostra_cancha(TAMANHO, cancha);
         jogadas++;
         free(alvo);
     }
@@ -130,11 +133,12 @@ void partida(int n, char cancha[n][n], char alfabeto[TAMANHO]) {
 
 }
 
-char *jogada(char alfabeto[TAMANHO], char cancha[TAMANHO][TAMANHO]) {
+char *jogada(char alfabeto[TAMANHO], char cancha[TAMANHO][TAMANHO], char jogador) {
     //TODO
     char *jogada = malloc(sizeof(char) * 3);
     int pedir = 1;
     while(pedir) {
+        printf("Jogador %c\n", jogador);
         printf("\nSelecione onde deseja jogar\n");
         scanf("%2s", jogada);
         /*TESTES*/
