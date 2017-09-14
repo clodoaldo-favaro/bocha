@@ -12,6 +12,7 @@ int calcula_erro(int linha_col);
 void partida(int n, char cancha[n][n], char alfabeto[n]);
 char *jogada(char alfabeto[TAMANHO], char cancha[TAMANHO][TAMANHO], char jogador);
 int valida_jogada(char jogada[3], char alfabeto[TAMANHO]);
+void colisao(int n, char cancha[n][n], int row, int col);
 
 
 
@@ -130,6 +131,8 @@ void partida(int n, char cancha[n][n], char alfabeto[TAMANHO]) {
         printf("Você acertou no %s\n", alvo);
         system("pause");
         movimenta_ponto(n, cancha, jogador_atual, coluna_linha_numerica[1], coluna_linha_numerica[0]); /*Mostra o deslocamento da bocha lançada*/
+        /*calcula colisao*/
+        colisao(n, cancha, coluna_linha_numerica[1], coluna_linha_numerica[0]);
 
         jogadas++;
         free(alvo);
@@ -203,10 +206,32 @@ int calcula_erro(int linha_col) {
 
 }
 
-void colisao(int n, char cancha[n][n], int row, int col, char bocha) {
-    alvo = cancha[row][col];
-    /*QUANDO CAIR EXATAMENTE EM CIMA*/
-    if(alvo != '-') {
+void colisao(int n, char cancha[n][n], int row, int col) {
+    char alvo = cancha[row][col];
+    /*SEM COLISAO DIRETA*/
+    if(alvo == '-') {
+        cancha[i][col] = c;
+        cancha[i + 1][col] = '-';
+        /*CALCULA SE CAI NA TANGENTE DE OUTRAS BOCHAS, MAS NÃO DO BOLIM*/
+        //TODO
+    } else {
+        /*COLISÃO DIRETA*/
+        int deslocamento = 3;
+        int left = 0, up = 0;
+        int i = 0;
+        int nova_lin = row; /*Valor inicial do objeto atingido*/
+
+
+        while(nova_lin > -1 && i < deslocamento) { /*ENQUANTO NÃO ***ATRAVESSAR*** A BORDA*/
+            nova_lin--;
+            i++;
+       }
+       /*SE NÃO COMPLETOU OS 3 MOVIMENTOS*/
+       if(i < deslocamento) {
+
+
+       }
+
 
     }
 
