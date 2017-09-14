@@ -54,10 +54,10 @@ void start_game()  {
 void lanca_bolim(int n, char cancha[n][n]) {
     int col = 0, row = 0;
     char bolim = 'X';
-    while(col == n || col < 1)  {
+    while(col > n - 2 || col < 1)  {
         col = rand() % n;
     }
-    while(row > n/2 || row == 0) {
+    while(row < n/3 || row >= 2*n/3) {
         row = rand() % n;
     }
 
@@ -101,14 +101,14 @@ void inicializa_cancha(int n, char cancha[n][n]) {
 
 void movimenta_ponto(int n, char cancha[n][n], char c, int row, int col) {
     int i;
-    char bolim = c;
-    cancha[TAMANHO - 1][col] = c; /*Ultima linha, e coluna selecionada aleatoriamente*/
 
-    for(i = TAMANHO - 1; i >= row; i--) { /*O bolim começa da última linha e vai subindo até a linha escolhida*/
+    cancha[TAMANHO - 1][col] = c; /*Ultima linha, e coluna selecionada*/
+
+    for(i = TAMANHO - 1; i >= row; i--) { /*Começa da última linha e vai subindo até a linha escolhida*/
         system("cls");
         mostra_cancha(TAMANHO, cancha);
         Sleep(300);
-        cancha[i][col] = bolim;
+        cancha[i][col] = c;
         cancha[i + 1][col] = '-';
     }
 
@@ -119,11 +119,17 @@ void partida(int n, char cancha[n][n], char alfabeto[TAMANHO]) {
     int duracao = 8, jogadas = 0;
     int pontos[2] = {0};
     char *alvo;
+    int coluna_linha_numerica[2];
+
     char jogador_atual = 'B';
     while(jogadas < duracao) {
         (jogador_atual == 'A') ? (jogador_atual = 'B') : (jogador_atual = 'A');
         alvo = jogada(alfabeto, cancha, jogador_atual);
+        coluna_linha_numerica[0] = alvo[0] - 65;/*COLUNA: CONVERTE LETRA PARA NUMERO INT A = 0, B = 1*/
+        coluna_linha_numerica[1] = alvo[1] - '0'; /*LINHA: CONVERTE CARACTERE DIGITO PARA INT '1' = 1*/
         printf("Você acertou no %s\n", alvo);
+        system("pause");
+        movimenta_ponto(n, cancha, jogador_atual, coluna_linha_numerica[1], coluna_linha_numerica[0]); /*Mostra o deslocamento da bocha lançada*/
         system("pause");
         mostra_cancha(TAMANHO, cancha);
         jogadas++;
@@ -141,6 +147,7 @@ char *jogada(char alfabeto[TAMANHO], char cancha[TAMANHO][TAMANHO], char jogador
         printf("Jogador %c\n", jogador);
         printf("\nSelecione onde deseja jogar\n");
         scanf("%2s", jogada);
+        jogada[0] = toupper(jogada[0]);
 
         if(valida_jogada(jogada, alfabeto)) {
             pedir = 0;
@@ -160,7 +167,7 @@ int valida_jogada(char jogada[3], char alfabeto[TAMANHO]) {
     /*Calcula erro*/
     jogada[0] = jogada[0] + calcula_erro(2); /*Calcula erro da coluna*/
     jogada[1] = jogada[1] + calcula_erro(1); /*Calcula erro da linha*/
-    printf("Ponto atingido pela bocha: %c%c\n", jogada[0], jogada[1]);
+    /*printf("Ponto atingido pela bocha: %c%c\n", jogada[0], jogada[1]);*/
 
     /*TESTES*/
     if(!isalpha(jogada[0])) {
