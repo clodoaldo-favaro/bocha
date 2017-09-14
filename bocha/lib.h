@@ -203,4 +203,13 @@ int calcula_erro(int linha_col) {
 
 }
 
+void colisao(int n, char cancha[n][n], int row, int col, char bocha) {
+    alvo = cancha[row][col];
+    /*QUANDO CAIR EXATAMENTE EM CIMA*/
+    if(alvo != '-') {
+
+    }
+
+}
+
 
