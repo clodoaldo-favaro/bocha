@@ -111,7 +111,7 @@ void movimenta_ponto(int n, char cancha[n][n], char c, int row, int col) {
         cancha[i][col] = c;
         cancha[i + 1][col] = '-';
     }
-
+    mostra_cancha(TAMANHO, cancha);
 }
 
 void partida(int n, char cancha[n][n], char alfabeto[TAMANHO]) {
@@ -130,8 +130,7 @@ void partida(int n, char cancha[n][n], char alfabeto[TAMANHO]) {
         printf("Você acertou no %s\n", alvo);
         system("pause");
         movimenta_ponto(n, cancha, jogador_atual, coluna_linha_numerica[1], coluna_linha_numerica[0]); /*Mostra o deslocamento da bocha lançada*/
-        system("pause");
-        mostra_cancha(TAMANHO, cancha);
+
         jogadas++;
         free(alvo);
     }
