@@ -102,6 +102,7 @@ void inicializa_cancha(int n, char cancha[n][n]) {
 
 void movimenta_ponto(int n, char cancha[n][n], char c, int row, int col) {
     int i;
+    char temp;
 
     cancha[TAMANHO - 1][col] = c; /*Ultima linha, e coluna selecionada*/
 
@@ -109,8 +110,9 @@ void movimenta_ponto(int n, char cancha[n][n], char c, int row, int col) {
         system("cls");
         mostra_cancha(TAMANHO, cancha);
         Sleep(300);
+        temp = cancha[i][col];
         cancha[i][col] = c;
-        cancha[i + 1][col] = '-';
+        cancha[i + 1][col] = temp;
     }
     mostra_cancha(TAMANHO, cancha);
 }
@@ -223,13 +225,13 @@ void colisao(int n, char cancha[n][n], int row, int col) {
 
 
         while(nova_lin > -1 && i < deslocamento) { /*ENQUANTO NÃO ***ATRAVESSAR*** A BORDA*/
-            nova_lin--;
+            nova_lin--; /*MOVE PRA CIMA*/
             i++;
        }
        /*SE NÃO COMPLETOU OS 3 MOVIMENTOS*/
-       if(i < deslocamento) {
-
-
+       while(i < deslocamento) {
+            nova_linha++; /*MOVE PRA BAIXO*/
+            i++;
        }
 
 
