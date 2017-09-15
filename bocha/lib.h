@@ -13,6 +13,7 @@ void partida(int n, char cancha[n][n], char alfabeto[n]);
 char *jogada(char alfabeto[TAMANHO], char cancha[TAMANHO][TAMANHO], char jogador);
 int valida_jogada(char jogada[3], char alfabeto[TAMANHO]);
 void colisao(int n, char cancha[n][n], int row, int col);
+void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col);
 
 
 
@@ -131,8 +132,9 @@ void partida(int n, char cancha[n][n], char alfabeto[TAMANHO]) {
         coluna_linha_numerica[0] = alvo[0] - 65;/*COLUNA: CONVERTE LETRA PARA NUMERO INT A = 0, B = 1*/
         coluna_linha_numerica[1] = alvo[1] - '0'; /*LINHA: CONVERTE CARACTERE DIGITO PARA INT '1' = 1*/
         printf("Você acertou no %s\n", alvo);
+        lanca_bocha(cancha, jogador_atual, coluna_linha_numerica[1], coluna_linha_numerica[0]);
         system("pause");
-        movimenta_ponto(n, cancha, jogador_atual, coluna_linha_numerica[1], coluna_linha_numerica[0]); /*Mostra o deslocamento da bocha lançada*/
+
         /*calcula colisao*/
         colisao(n, cancha, coluna_linha_numerica[1], coluna_linha_numerica[0]);
 
@@ -211,31 +213,11 @@ int calcula_erro(int linha_col) {
 void colisao(int n, char cancha[n][n], int row, int col) {
     char alvo = cancha[row][col];
     /*SEM COLISAO DIRETA*/
-    if(alvo == '-') {
-        cancha[i][col] = c;
-        cancha[i + 1][col] = '-';
-        /*CALCULA SE CAI NA TANGENTE DE OUTRAS BOCHAS, MAS NÃO DO BOLIM*/
-        //TODO
-    } else {
-        /*COLISÃO DIRETA*/
-        int deslocamento = 3;
-        int left = 0, up = 0;
-        int i = 0;
-        int nova_lin = row; /*Valor inicial do objeto atingido*/
 
 
-        while(nova_lin > -1 && i < deslocamento) { /*ENQUANTO NÃO ***ATRAVESSAR*** A BORDA*/
-            nova_lin--; /*MOVE PRA CIMA*/
-            i++;
-       }
-       /*SE NÃO COMPLETOU OS 3 MOVIMENTOS*/
-       while(i < deslocamento) {
-            nova_linha++; /*MOVE PRA BAIXO*/
-            i++;
-       }
+}
 
-
-    }
+void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col) {
 
 }
 
