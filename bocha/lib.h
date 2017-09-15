@@ -12,8 +12,8 @@ int calcula_erro(int linha_col);
 void partida(int n, char cancha[n][n], char alfabeto[n]);
 char *jogada(char alfabeto[TAMANHO], char cancha[TAMANHO][TAMANHO], char jogador);
 int valida_jogada(char jogada[3], char alfabeto[TAMANHO]);
-void colisao(int n, char cancha[n][n], int row, int col);
 void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col);
+void colisao_tangente(char cancha[TAMANHO][TAMANHO], int row, int col, int desclocamento_horizontal, int deslocamento_vertical);
 
 
 
@@ -118,6 +118,8 @@ void movimenta_ponto(int n, char cancha[n][n], char c, int row, int col) {
     mostra_cancha(TAMANHO, cancha);
 }
 
+
+/***********************CHAMA VÁRIAS OUTRAS, PODE-SE DIZER QUE É A PRINCIPAL*****************************************/
 void partida(int n, char cancha[n][n], char alfabeto[TAMANHO]) {
     //TODO
     int duracao = 8, jogadas = 0;
@@ -131,12 +133,11 @@ void partida(int n, char cancha[n][n], char alfabeto[TAMANHO]) {
         alvo = jogada(alfabeto, cancha, jogador_atual);
         coluna_linha_numerica[0] = alvo[0] - 65;/*COLUNA: CONVERTE LETRA PARA NUMERO INT A = 0, B = 1*/
         coluna_linha_numerica[1] = alvo[1] - '0'; /*LINHA: CONVERTE CARACTERE DIGITO PARA INT '1' = 1*/
-        printf("Você acertou no %s\n", alvo);
+        printf("O jogador acertou no %s\n", alvo);
         lanca_bocha(cancha, jogador_atual, coluna_linha_numerica[1], coluna_linha_numerica[0]);
         system("pause");
 
-        /*calcula colisao*/
-        colisao(n, cancha, coluna_linha_numerica[1], coluna_linha_numerica[0]);
+
 
         jogadas++;
         free(alvo);
@@ -144,6 +145,7 @@ void partida(int n, char cancha[n][n], char alfabeto[TAMANHO]) {
 
 
 }
+/************************************************************************************************************************/
 
 char *jogada(char alfabeto[TAMANHO], char cancha[TAMANHO][TAMANHO], char jogador) {
 
@@ -210,14 +212,43 @@ int calcula_erro(int linha_col) {
 
 }
 
-void colisao(int n, char cancha[n][n], int row, int col) {
-    char alvo = cancha[row][col];
-    /*SEM COLISAO DIRETA*/
+
+
+void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col) {
+
+    /*SE CAIR EM LUGAR VAZIO*/
+    if(cancha[row][col] == '-') {
+        cancha[row][col] == jogador;
+        /*TESTAR COLISAO TANGENTE*/
+        int i, j;
+        for(i = row - 1; i <= row + 1; i++) {
+            for(j = col - 1; j <= col + 1; j++) {
+                /*PONTO (0, 0) É ONDE CAIU, IGNORAR*/
+                if(i != 0 && j != 0) {
+                    /*TESTA SE TEM BOCHA NO LUGAR*/
+                    if()
+                }
+            }
+        }
+
+
+
+    } else {
+
+
+
+    }
+
 
 
 }
 
-void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col) {
+void colisao_tangente(char cancha[TAMANHO][TAMANHO], int row, int col, int deslocamento_horizontal, int deslocamento_vertical) {
+    char bocha_deslocada = cancha[row + deslocamento_horizontal][col + deslocamento_vertical];
+
+    /*CHECAR LIMITE*/
+    if( (row + deslocamento_horizontal*2 >= 0 && row + deslocamento_horizontal*2 <= TAMANHO - 1) )
+
 
 }
 
