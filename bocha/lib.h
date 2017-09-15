@@ -220,16 +220,8 @@ void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col) 
     if(cancha[row][col] == '-') {
         cancha[row][col] == jogador;
         /*TESTAR COLISAO TANGENTE*/
-        int i, j;
-        for(i = row - 1; i <= row + 1; i++) {
-            for(j = col - 1; j <= col + 1; j++) {
-                /*PONTO (0, 0) É ONDE CAIU, IGNORAR*/
-                if(i != 0 && j != 0) {
-                    /*TESTA SE TEM BOCHA NO LUGAR*/
-                    if()
-                }
-            }
-        }
+
+
 
 
 
