@@ -121,23 +121,20 @@ void inicializa_cancha(char cancha[TAMANHO][TAMANHO]) {
 void partida(char cancha[TAMANHO][TAMANHO], char alfabeto[TAMANHO]) {
     //TODO
     int duracao = 8, jogadas = 0;
-    int pontos[2] = {0};
-    char *alvo;
-    int coluna_linha_numerica[2];
+    int pontos_A = 0, pontos_B = 0;
+    char *alvo; /*É UM PONTEIRO, OU SEJA: RECEBE ENDEREÇO PARA UMA VARIÁVEL DE TIPO CHAR*/
+    int row, col;
 
     char jogador_atual = 'B';
     while(jogadas < duracao) {
         (jogador_atual == 'B') ? (jogador_atual = 'A') : (jogador_atual = 'B');
-        alvo = jogada(alfabeto, cancha, jogador_atual);
-        coluna_linha_numerica[0] = alvo[0] - 65;/*COLUNA: CONVERTE LETRA PARA NUMERO INT A = 0, B = 1*/
-        coluna_linha_numerica[1] = alvo[1] - '0'; /*LINHA: CONVERTE CARACTERE DIGITO PARA INT '1' = 1*/
+        alvo = jogada(alfabeto, cancha, jogador_atual); /*RECEBE UM ENDEREÇO*/
+        col = alvo[0] - 65;/*COLUNA: CONVERTE LETRA PARA NUMERO INT A = 0, B = 1*/
+        row = alvo[1] - '0'; /*LINHA: CONVERTE CARACTERE DIGITO PARA INT '1' = 1*/
         printf("O jogador acertou no %s\n", alvo);
-        lanca_bocha(cancha, jogador_atual, coluna_linha_numerica[1], coluna_linha_numerica[0]);
+        lanca_bocha(cancha, jogador_atual, row, col);
         system("pause");
         mostra_cancha(cancha);
-
-
-
         jogadas++;
         free(alvo);
     }
@@ -148,7 +145,7 @@ void partida(char cancha[TAMANHO][TAMANHO], char alfabeto[TAMANHO]) {
 
 char *jogada(char alfabeto[TAMANHO], char cancha[TAMANHO][TAMANHO], char jogador) {
 
-    char *jogada = malloc(sizeof(char) * 3);
+    char *jogada = malloc(sizeof(char) * 3); /*O PONTEIRO RECEBE UM ENDEREÇO COM O TAMANHO DE 3 BYTES*/
     int pedir = 1;
     while(pedir) {
         printf("Jogador %c\n", jogador);
@@ -174,11 +171,10 @@ int valida_jogada(char jogada[3], char alfabeto[TAMANHO]) {
     /*Calcula erro*/
     jogada[0] = jogada[0] + calcula_erro(2); /*Calcula erro da coluna*/
     jogada[1] = jogada[1] + calcula_erro(1); /*Calcula erro da linha*/
-    /*printf("Ponto atingido pela bocha: %c%c\n", jogada[0], jogada[1]);*/
 
     /*TESTES*/
     if(!isalpha(jogada[0])) {
-        printf("Primeiro digito não é letra\n");
+        printf("Ponto atingido = %s. Primeiro digito não é letra. Joque novamente.\n", jogada);
         return 0;
     }
     if(jogada[0] < alfabeto[0] || jogada[0] > alfabeto[TAMANHO - 1]) {
