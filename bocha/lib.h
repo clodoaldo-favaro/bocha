@@ -4,16 +4,15 @@
 #include <windows.h>
 void start_screen();
 void start_game();
-void lanca_bolim(int n, char cancha[n][n]);
+void lanca_bolim(char cancha[TAMANHO][TAMANHO]);
 void mostra_cancha(char cancha[TAMANHO][TAMANHO]);
 void inicializa_cancha(char cancha[TAMANHO][TAMANHO]);
-void movimenta_ponto(int n, char cancha[n][n], char c, int row, int col);
 int calcula_erro(int linha_col);
 void partida(char cancha[TAMANHO][TAMANHO], char alfabeto[TAMANHO]);
 char *jogada(char alfabeto[TAMANHO], char cancha[TAMANHO][TAMANHO], char jogador);
 int valida_jogada(char jogada[3], char alfabeto[TAMANHO]);
 void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col);
-void colisao_tangente(char cancha[TAMANHO][TAMANHO], int row, int col, int desclocamento_horizontal, int deslocamento_vertical);
+void colisao_tangente(char cancha[TAMANHO][TAMANHO], int row, int col, int deslocamento_horizontal, int deslocamento_vertical);
 
 
 
@@ -45,7 +44,7 @@ void start_game()  {
     }
 
     inicializa_cancha(cancha);
-    lanca_bolim(TAMANHO, cancha);
+    lanca_bolim(cancha);
     partida(cancha, alfabeto);
     system("pause");
 
@@ -54,17 +53,30 @@ void start_game()  {
 
 
 
-void lanca_bolim(int n, char cancha[n][n]) {
+void lanca_bolim(char cancha[TAMANHO][TAMANHO]) {
     int col = 0, row = 0;
-    char bolim = 'X';
-    while(col > n - 2 || col < 1)  {
-        col = rand() % n;
+    /*CALCULA ONDE O BOLIM SERÁ JOGADO*/
+    while(col > TAMANHO - 2 || col < 1)  {
+        col = rand() % TAMANHO;
     }
-    while(row < n/3 || row >= 2*n/3) {
-        row = rand() % n;
+    while(row < TAMANHO/3 || row >= 2*TAMANHO/3) {
+        row = rand() % TAMANHO;
     }
+    /*ANIMAÇÃO*/
+    int i;
+    char temp;
 
-    movimenta_ponto(n, cancha, bolim, row, col);
+    for(i = TAMANHO - 1; i >= row; i--) { /*Começa da última linha e vai subindo até a linha escolhida*/
+        system("cls");
+        mostra_cancha(cancha);
+        Sleep(300);
+        temp = cancha[i][col];
+        cancha[i][col] = 'X';
+        cancha[i + 1][col] = temp;
+    }
+    mostra_cancha(cancha);
+
+
 
 
 }
@@ -102,22 +114,7 @@ void inicializa_cancha(char cancha[TAMANHO][TAMANHO]) {
     }
 }
 
-void movimenta_ponto(int n, char cancha[n][n], char c, int row, int col) {
-    int i;
-    char temp;
 
-    cancha[TAMANHO - 1][col] = c; /*Ultima linha, e coluna selecionada*/
-
-    for(i = TAMANHO - 1; i >= row; i--) { /*Começa da última linha e vai subindo até a linha escolhida*/
-        system("cls");
-        mostra_cancha(cancha);
-        Sleep(300);
-        temp = cancha[i][col];
-        cancha[i][col] = c;
-        cancha[i + 1][col] = temp;
-    }
-    mostra_cancha(cancha);
-}
 
 
 /***********************CHAMA VÁRIAS OUTRAS, PODE-SE DIZER QUE É A PRINCIPAL*****************************************/
