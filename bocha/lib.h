@@ -5,11 +5,11 @@
 void start_screen();
 void start_game();
 void lanca_bolim(int n, char cancha[n][n]);
-void mostra_cancha(int n, char cancha[n][n]);
-void inicializa_cancha(int n, char cancha[n][n]);
+void mostra_cancha(char cancha[TAMANHO][TAMANHO]);
+void inicializa_cancha(char cancha[TAMANHO][TAMANHO]);
 void movimenta_ponto(int n, char cancha[n][n], char c, int row, int col);
 int calcula_erro(int linha_col);
-void partida(int n, char cancha[n][n], char alfabeto[n]);
+void partida(char cancha[TAMANHO][TAMANHO], char alfabeto[TAMANHO]);
 char *jogada(char alfabeto[TAMANHO], char cancha[TAMANHO][TAMANHO], char jogador);
 int valida_jogada(char jogada[3], char alfabeto[TAMANHO]);
 void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col);
@@ -36,16 +36,34 @@ void start_game()  {
 
     system("cls");
     char cancha[TAMANHO][TAMANHO]; /*DECLARA A CANCHA*/
-    int i;
+    int i, j;
+
+    /*********************************************************FIM TESTE*/
     char alfabeto[TAMANHO];
     /*Declara o alfabeto permitido para a cancha*/
     for(i = 65; i < 65 + TAMANHO; i++) {
         alfabeto[i - 65] = (char)i;
     }
 
-    inicializa_cancha(TAMANHO, cancha);
+
+    inicializa_cancha(cancha);
+
+
+    FILE *log_endereco;
+    log_endereco = fopen("C:\\Users\\clodo\\Downloads\\logs_cancha\\log_startgame().txt", "w");
+    /*MOSTRA OS ENDEREÇOS DA MATRIZ************************TESTE****************************/
+    for(i = 0; i < TAMANHO; i++) {
+        for(j = 0; j < TAMANHO; j++) {
+            fprintf(log_endereco, "start_game() Endereco de cancha[%d][%d] = %p Conteudo = %c\n", i, j, &cancha[i][j], cancha[i][j]);
+        }
+    }
+    fclose(log_endereco);
+
+
+
+
     lanca_bolim(TAMANHO, cancha);
-    partida(TAMANHO, cancha, alfabeto);
+    partida(cancha, alfabeto);
     system("pause");
 
 
@@ -68,19 +86,19 @@ void lanca_bolim(int n, char cancha[n][n]) {
 
 }
 
-void mostra_cancha(int n, char cancha[n][n]) {
+void mostra_cancha(char cancha[TAMANHO][TAMANHO]) {
     system("cls");
     int i, j;
     printf("\n\n");
     printf("%25c", ' ');
     /*Mostra as letras*/
-    for(i = 0; i < n; i++) {
+    for(i = 0; i < TAMANHO; i++) {
         printf("%3c", 65 + i);
     }
     printf("\n\n");
-    for(i = 0; i < n; i++) {
+    for(i = 0; i < TAMANHO; i++) {
         printf("%22d%3c", i, ' ');
-        for(j = 0; j < n; j++) {
+        for(j = 0; j < TAMANHO; j++) {
             printf("%3c", cancha[i][j]);
         }
         printf("\n");
@@ -92,7 +110,7 @@ void mostra_cancha(int n, char cancha[n][n]) {
 
 }
 
-void inicializa_cancha(int n, char cancha[n][n]) {
+void inicializa_cancha(char cancha[TAMANHO][TAMANHO]) {
     int i, j;
     for(i = 0; i < TAMANHO; i++) {
         for(j = 0; j < TAMANHO; j++) {
@@ -109,18 +127,18 @@ void movimenta_ponto(int n, char cancha[n][n], char c, int row, int col) {
 
     for(i = TAMANHO - 1; i >= row; i--) { /*Começa da última linha e vai subindo até a linha escolhida*/
         system("cls");
-        mostra_cancha(TAMANHO, cancha);
+        mostra_cancha(cancha);
         Sleep(300);
         temp = cancha[i][col];
         cancha[i][col] = c;
         cancha[i + 1][col] = temp;
     }
-    mostra_cancha(TAMANHO, cancha);
+    mostra_cancha(cancha);
 }
 
 
 /***********************CHAMA VÁRIAS OUTRAS, PODE-SE DIZER QUE É A PRINCIPAL*****************************************/
-void partida(int n, char cancha[n][n], char alfabeto[TAMANHO]) {
+void partida(char cancha[TAMANHO][TAMANHO], char alfabeto[TAMANHO]) {
     //TODO
     int duracao = 8, jogadas = 0;
     int pontos[2] = {0};
@@ -129,13 +147,14 @@ void partida(int n, char cancha[n][n], char alfabeto[TAMANHO]) {
 
     char jogador_atual = 'B';
     while(jogadas < duracao) {
-        (jogador_atual == 'A') ? (jogador_atual = 'B') : (jogador_atual = 'A');
+        (jogador_atual == 'B') ? (jogador_atual = 'A') : (jogador_atual = 'B');
         alvo = jogada(alfabeto, cancha, jogador_atual);
         coluna_linha_numerica[0] = alvo[0] - 65;/*COLUNA: CONVERTE LETRA PARA NUMERO INT A = 0, B = 1*/
         coluna_linha_numerica[1] = alvo[1] - '0'; /*LINHA: CONVERTE CARACTERE DIGITO PARA INT '1' = 1*/
         printf("O jogador acertou no %s\n", alvo);
         lanca_bocha(cancha, jogador_atual, coluna_linha_numerica[1], coluna_linha_numerica[0]);
         system("pause");
+        mostra_cancha(cancha);
 
 
 
@@ -161,7 +180,7 @@ char *jogada(char alfabeto[TAMANHO], char cancha[TAMANHO][TAMANHO], char jogador
             pedir = 0;
         } else {
             system("pause");
-            mostra_cancha(TAMANHO, cancha);
+            mostra_cancha(cancha);
         }
 
     }
@@ -216,9 +235,18 @@ int calcula_erro(int linha_col) {
 
 void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col) {
 
+    FILE *log_endereco;
+    log_endereco = fopen("C:\\Users\\clodo\\Downloads\\logs_cancha\\log_lanca_bocha().txt", "w");
+    /**********************/
     /*SE CAIR EM LUGAR VAZIO*/
     if(cancha[row][col] == '-') {
-        cancha[row][col] == jogador;
+
+
+
+        cancha[row][col] = jogador;
+        fprintf(log_endereco, "Copiando %c em cancha[%d][%d] no endereco %p\n", jogador, row, col, &cancha[row][col]);
+
+
         /*TESTAR COLISAO TANGENTE*/
 
 
@@ -230,7 +258,16 @@ void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col) 
 
 
     }
+    int i, j;
 
+
+    for(i = 0; i < TAMANHO; i++) {
+        for(j = 0; j < TAMANHO; j++) {
+            fprintf(log_endereco, "lanca_bocha() Endereco de cancha[%d][%d] = %p Conteudo = %c\n", i, j, &cancha[i][j], cancha[i][j]);
+
+        }
+    }
+    fclose(log_endereco);
 
 
 }
@@ -239,7 +276,9 @@ void colisao_tangente(char cancha[TAMANHO][TAMANHO], int row, int col, int deslo
     char bocha_deslocada = cancha[row + deslocamento_horizontal][col + deslocamento_vertical];
 
     /*CHECAR LIMITE*/
-    if( (row + deslocamento_horizontal*2 >= 0 && row + deslocamento_horizontal*2 <= TAMANHO - 1) )
+    if( (row + deslocamento_horizontal*2 >= 0 && row + deslocamento_horizontal*2 <= TAMANHO - 1) ) {
+
+    }
 
 
 }
