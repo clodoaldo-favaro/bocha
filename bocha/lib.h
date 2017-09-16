@@ -36,32 +36,15 @@ void start_game()  {
 
     system("cls");
     char cancha[TAMANHO][TAMANHO]; /*DECLARA A CANCHA*/
-    int i, j;
+    int i;
 
-    /*********************************************************FIM TESTE*/
     char alfabeto[TAMANHO];
     /*Declara o alfabeto permitido para a cancha*/
     for(i = 65; i < 65 + TAMANHO; i++) {
         alfabeto[i - 65] = (char)i;
     }
 
-
     inicializa_cancha(cancha);
-
-
-    FILE *log_endereco;
-    log_endereco = fopen("C:\\Users\\clodo\\Downloads\\logs_cancha\\log_startgame().txt", "w");
-    /*MOSTRA OS ENDEREÇOS DA MATRIZ************************TESTE****************************/
-    for(i = 0; i < TAMANHO; i++) {
-        for(j = 0; j < TAMANHO; j++) {
-            fprintf(log_endereco, "start_game() Endereco de cancha[%d][%d] = %p Conteudo = %c\n", i, j, &cancha[i][j], cancha[i][j]);
-        }
-    }
-    fclose(log_endereco);
-
-
-
-
     lanca_bolim(TAMANHO, cancha);
     partida(cancha, alfabeto);
     system("pause");
@@ -235,8 +218,7 @@ int calcula_erro(int linha_col) {
 
 void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col) {
 
-    FILE *log_endereco;
-    log_endereco = fopen("C:\\Users\\clodo\\Downloads\\logs_cancha\\log_lanca_bocha().txt", "w");
+
     /**********************/
     /*SE CAIR EM LUGAR VAZIO*/
     if(cancha[row][col] == '-') {
@@ -244,7 +226,7 @@ void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col) 
 
 
         cancha[row][col] = jogador;
-        fprintf(log_endereco, "Copiando %c em cancha[%d][%d] no endereco %p\n", jogador, row, col, &cancha[row][col]);
+
 
 
         /*TESTAR COLISAO TANGENTE*/
@@ -261,13 +243,6 @@ void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col) 
     int i, j;
 
 
-    for(i = 0; i < TAMANHO; i++) {
-        for(j = 0; j < TAMANHO; j++) {
-            fprintf(log_endereco, "lanca_bocha() Endereco de cancha[%d][%d] = %p Conteudo = %c\n", i, j, &cancha[i][j], cancha[i][j]);
-
-        }
-    }
-    fclose(log_endereco);
 
 
 }
