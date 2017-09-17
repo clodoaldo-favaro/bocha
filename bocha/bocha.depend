@@ -27,8 +27,9 @@
 	"lib.h"
 	<locale.h>
 
-1505593747 c:\users\clodo\downloads\bocha\bocha\lib.h
+1505609504 c:\users\clodo\downloads\bocha\bocha\lib.h
 	<stdlib.h>
 	<ctype.h>
 	<windows.h>
+	<math.h>
 

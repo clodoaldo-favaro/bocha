@@ -2,6 +2,7 @@
 #include <ctype.h>
 #define TAMANHO 10
 #include <windows.h>
+#include <math.h>
 void start_screen();
 void start_game();
 void lanca_bolim(char cancha[TAMANHO][TAMANHO]);
@@ -13,6 +14,7 @@ char *jogada(char alfabeto[TAMANHO], char cancha[TAMANHO][TAMANHO], char jogador
 int valida_jogada(char jogada[3], char alfabeto[TAMANHO]);
 void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col);
 void colisao_tangente(char cancha[TAMANHO][TAMANHO], int row, int col, int deslocamento_horizontal, int deslocamento_vertical);
+int calcula_pontos(char jogador, char cancha[TAMANHO][TAMANHO]);
 
 
 
@@ -100,7 +102,7 @@ void mostra_cancha(char cancha[TAMANHO][TAMANHO]) {
     }
 
 
-    printf("\n\n");
+    printf("\n");
 
 
 }
@@ -121,13 +123,21 @@ void inicializa_cancha(char cancha[TAMANHO][TAMANHO]) {
 void partida(char cancha[TAMANHO][TAMANHO], char alfabeto[TAMANHO]) {
     //TODO
     int duracao = 8, jogadas = 0;
-    int pontos_A = 0, pontos_B = 0;
+    int pontos_A = 0, pontos_B = 0, jogadas_A = 0, jogadas_B = 0;
     char *alvo; /*É UM PONTEIRO, OU SEJA: RECEBE ENDEREÇO PARA UMA VARIÁVEL DE TIPO CHAR*/
     int row, col;
 
     char jogador_atual = 'B';
     while(jogadas < duracao) {
-        (jogador_atual == 'B') ? (jogador_atual = 'A') : (jogador_atual = 'B');
+        /*DEFINE O JOGADOR ATUAL*/
+        if(jogador_atual == 'B') {
+            jogador_atual = 'A';
+            jogadas_A++;
+        }else {
+            jogador_atual = 'B';
+            jogadas_B++;
+        }
+
         alvo = jogada(alfabeto, cancha, jogador_atual); /*RECEBE UM ENDEREÇO*/
         col = alvo[0] - 65;/*COLUNA: CONVERTE LETRA PARA NUMERO INT A = 0, B = 1*/
         row = alvo[1] - '0'; /*LINHA: CONVERTE CARACTERE DIGITO PARA INT '1' = 1*/
@@ -135,8 +145,21 @@ void partida(char cancha[TAMANHO][TAMANHO], char alfabeto[TAMANHO]) {
         lanca_bocha(cancha, jogador_atual, row, col);
         system("pause");
         mostra_cancha(cancha);
+        pontos_A = calcula_pontos('A', cancha);
+        pontos_B = calcula_pontos('B', cancha);
+        printf("%28cEquipe A%10cEquipe B\n", ' ', ' ');
+        printf("%10cPontos:%17c %d%17c%d\n",' ',' ', pontos_A, ' ', pontos_B);
+        printf("%10cJogadas restantes:%7c%d%17c%d\n", ' ', ' ', duracao/2 - jogadas_A, ' ', duracao/2 - jogadas_B);
         jogadas++;
         free(alvo);
+    }
+    /*Fim do jogo, mostra vencedor*/
+    if(pontos_A > pontos_B) {
+        printf("Vencedor: equipe A!\n");
+    }else if(pontos_A < pontos_B) {
+        printf("Vencedor: equipe B!\n");
+    }else {
+        printf("Empate!\n");
     }
 
 
@@ -148,8 +171,8 @@ char *jogada(char alfabeto[TAMANHO], char cancha[TAMANHO][TAMANHO], char jogador
     char *jogada = malloc(sizeof(char) * 3); /*O PONTEIRO RECEBE UM ENDEREÇO COM O TAMANHO DE 3 BYTES*/
     int pedir = 1;
     while(pedir) {
-        printf("Jogador %c\n", jogador);
-        printf("\nSelecione onde deseja jogar\n");
+        printf("\nJogador %c\n", jogador);
+        printf("Selecione onde deseja jogar\n");
         scanf("%2s", jogada);
         jogada[0] = toupper(jogada[0]);
 
@@ -233,7 +256,7 @@ void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col) 
 
 
     }
-    int i, j;
+
 
 
 
@@ -247,6 +270,40 @@ void colisao_tangente(char cancha[TAMANHO][TAMANHO], int row, int col, int deslo
     if( (row + deslocamento_horizontal*2 >= 0 && row + deslocamento_horizontal*2 <= TAMANHO - 1) ) {
 
     }
+
+
+}
+
+int calcula_pontos(char jogador, char cancha[TAMANHO][TAMANHO]) {
+
+    int i, j, bolim_row, bolim_col, achou = 0, pontuacao = 0, distancia;
+    /*GUARDAR POSIÇÃO DO BOLIM*/
+    for(i = 0; i < TAMANHO && !achou; i++) {
+        for(j = 0; j < TAMANHO && !achou; j++) {
+            if(cancha[i][j] == 'X') {
+                bolim_row = i;
+                bolim_col = j;
+                achou = 1;
+
+            }
+        }
+    }
+    /*PROCURAR PELO CARACTERE DA EQUIPE NA MATRIZ E CALCULAR OS PONTOS*/
+    for(i = 0; i < TAMANHO; i++) {
+        for(j = 0; j < TAMANHO; j++) {
+            if(cancha[i][j] == jogador) {
+                /*ENCONTROU O CARACTERE*/
+                distancia = sqrt(pow(i - bolim_row, 2) + pow(j - bolim_col, 2));
+                if(distancia == 1) {
+                    /*DISTANCIA = 1 VALE 2 PONTOS, O RESTO VALE 1*/
+                    pontuacao += 2;
+                }else {
+                    pontuacao++;
+                }
+            }
+        }
+    }
+    return pontuacao;
 
 
 }
