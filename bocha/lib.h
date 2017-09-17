@@ -274,6 +274,20 @@ void colisao_tangente(char cancha[TAMANHO][TAMANHO], int row, int col, int deslo
 
 }
 
+
+void colisao_direta(char cancha[TAMANHO][TAMANHO], int row, int col, char bocha, int deslocar) {
+
+    char temp;
+    if(row - 1 >= 0) {
+        if(cancha[row - 1][col] == '-') {
+            /*Espaço acima é vazio*/
+
+        }
+    }
+
+
+}
+
 int calcula_pontos(char jogador, char cancha[TAMANHO][TAMANHO]) {
 
     int i, j, bolim_row, bolim_col, achou = 0, pontuacao = 0, distancia;
