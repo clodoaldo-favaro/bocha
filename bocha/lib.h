@@ -15,7 +15,7 @@ int valida_jogada(char jogada[3], char alfabeto[TAMANHO]);
 void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col);
 void colisao_tangente(char cancha[TAMANHO][TAMANHO], int row, int col, int deslocamento_horizontal, int deslocamento_vertical);
 int calcula_pontos(char jogador, char cancha[TAMANHO][TAMANHO]);
-void colisao_direta(char cancha[TAMANHO][TAMANHO], int row, int col, char bocha_movida, int deslocar);
+void colisao_direta(char cancha[TAMANHO][TAMANHO], int row, int col, char jogador, int deslocar);
 
 
 
@@ -95,7 +95,7 @@ void mostra_cancha(char cancha[TAMANHO][TAMANHO]) {
     }
     printf("\n\n");
     for(i = 0; i < TAMANHO; i++) {
-        printf("%22d%3c", i, ' ');
+        printf("%22d%3c", 10 - i, ' ');
         for(j = 0; j < TAMANHO; j++) {
             printf("%3c", cancha[i][j]);
         }
@@ -140,8 +140,16 @@ void partida(char cancha[TAMANHO][TAMANHO], char alfabeto[TAMANHO]) {
         }
 
         alvo = jogada(alfabeto, cancha, jogador_atual); /*RECEBE UM ENDEREÇO*/
+
         col = alvo[0] - 65;/*COLUNA: CONVERTE LETRA PARA NUMERO INT A = 0, B = 1*/
-        row = alvo[1] - '0'; /*LINHA: CONVERTE CARACTERE DIGITO PARA INT '1' = 1*/
+        if(strlen(alvo) == 3) {
+            row = 0 + (alvo[2] - '0'); /*JA VALIDOU E DEU 10*/
+
+        }else {
+            row = TAMANHO - (alvo[1] - '0'); /*LINHA: CONVERTE CARACTERE DIGITO PARA INT '1' = 1*/
+
+        }
+
         printf("O jogador acertou no %s\n", alvo);
         lanca_bocha(cancha, jogador_atual, row, col);
         system("pause");
@@ -169,16 +177,20 @@ void partida(char cancha[TAMANHO][TAMANHO], char alfabeto[TAMANHO]) {
 
 char *jogada(char alfabeto[TAMANHO], char cancha[TAMANHO][TAMANHO], char jogador) {
 
-    char *jogada = malloc(sizeof(char) * 3); /*O PONTEIRO RECEBE UM ENDEREÇO COM O TAMANHO DE 3 BYTES*/
+    char *jogada = malloc(sizeof(char) * 4); /*O PONTEIRO RECEBE UM ENDEREÇO COM O TAMANHO DE 3 BYTES*/
     int pedir = 1;
     while(pedir) {
         printf("\nJogador %c\n", jogador);
         printf("Selecione onde deseja jogar\n");
-        scanf("%2s", jogada);
+        fflush(stdin);
+        gets(jogada);
+
+
         jogada[0] = toupper(jogada[0]);
 
         if(valida_jogada(jogada, alfabeto)) {
             pedir = 0;
+
         } else {
             system("pause");
             mostra_cancha(cancha);
@@ -190,29 +202,59 @@ char *jogada(char alfabeto[TAMANHO], char cancha[TAMANHO][TAMANHO], char jogador
 
 }
 
-int valida_jogada(char jogada[3], char alfabeto[TAMANHO]) {
+int valida_jogada(char jogada[4], char alfabeto[TAMANHO]) {
 
     /*Calcula erro*/
+    int teste, erro, numero;
     jogada[0] = jogada[0] + calcula_erro(2); /*Calcula erro da coluna*/
-    jogada[1] = jogada[1] + calcula_erro(1); /*Calcula erro da linha*/
+
+    if(strlen(jogada) == 3) {
+
+
+        erro = calcula_erro(1);
+
+        numero = (jogada[1] - '0') * 10 + (jogada[2] - '0') + erro;
+        if(numero < 10) {
+            jogada[2] = '\0';
+            jogada[1] = numero + '0';
+        }
+
+
+
+    }else if(strlen(jogada) == 2) {
+
+
+        erro = calcula_erro(1);
+
+        numero = (jogada[1] - '0') + erro;
+        if(numero < 10) {
+
+            jogada[2] = '\0';
+            jogada[1] = numero + '0';
+
+        }
+    }
+
 
     /*TESTES*/
     if(!isalpha(jogada[0])) {
-        printf("Ponto atingido = %s. Primeiro digito não é letra. Joque novamente.\n", jogada);
+        printf("%s:  primeiro digito não é letra. Joque novamente.\n", jogada);
         return 0;
     }
     if(jogada[0] < alfabeto[0] || jogada[0] > alfabeto[TAMANHO - 1]) {
-        printf("Jogada fora dos limites laterais\n");
+        printf("%s: jogada fora dos limites laterais. Jogue novamente.\n", jogada);
         return 0;
     }
     if(!isdigit(jogada[1])) {
-        printf("Segundo dígito não é número\n");
+        printf("%s: segundo dígito não é número. Jogue novamente.\n", jogada);
         return 0;
     }
-    if((jogada[1] - '0') < 0 || (jogada[1] - '0') > TAMANHO) {
-        printf("Jogada fora do limite vertical\n");
+    if(numero  <= 0 || numero > TAMANHO) {
+        printf("%c%d: jogada fora do limite vertical. Jogue novamente.\n", jogada[0], numero);
         return 0;
     }
+
+
     return 1;
 }
 
@@ -250,7 +292,7 @@ void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col) 
 
 
     } else { /*COLISÃO DIRETA*/
-        colisao_direta(cancha, row, col, cancha[row][col], 3);
+        colisao_direta(cancha, row, col, jogador, 3);
 
 
     }
@@ -262,30 +304,32 @@ void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col) 
 }
 
 void colisao_tangente(char cancha[TAMANHO][TAMANHO], int row, int col, int deslocamento_horizontal, int deslocamento_vertical) {
-    char bocha_deslocada = cancha[row + deslocamento_horizontal][col + deslocamento_vertical];
 
-    /*CHECAR LIMITE*/
-    if( (row + deslocamento_horizontal*2 >= 0 && row + deslocamento_horizontal*2 <= TAMANHO - 1) ) {
-
-    }
 
 
 }
 
 
-void colisao_direta(char cancha[TAMANHO][TAMANHO], int row, int col, char bocha_movida, int deslocar) {
+void colisao_direta(char cancha[TAMANHO][TAMANHO], int row, int col, char jogador, int deslocar) {
 
+    /*PARA ENTRAR NESSA FUNÇÃO, cancha[row][col] NÃO ESTÁ VAZIA*/
 
-    /*Ainda tem casas a deslocar*/
-    if(deslocar > 0) {
-        /*Se estiver dentro do limite superior da cancha*/
-        if(row - 1 > 0) {
-            row--;
-        }else {
-            row++;
+    char temp;
+    if(row > 0) { /*NÃO BATEU NA BORDA*/
+        if(cancha[row - 1][col] == '-') { /*ESPAÇO LIVRE*/
+            temp = cancha[row][col];
+            cancha[row][col] = jogador;
+            cancha[row - 1][col] = temp;
+            deslocar--;
+            row--; /*AGORA ESTÁ NA LINHA CIMA DA ORIGINAL*/
+            if(deslocar > 0) {
+                colisao_direta(cancha, row, col, cancha[row][col], deslocar);
+            }
+
         }
-
     }
+
+
 
 
 
