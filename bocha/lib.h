@@ -15,6 +15,7 @@ int valida_jogada(char jogada[3], char alfabeto[TAMANHO]);
 void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col);
 void colisao_tangente(char cancha[TAMANHO][TAMANHO], int row, int col, int deslocamento_horizontal, int deslocamento_vertical);
 int calcula_pontos(char jogador, char cancha[TAMANHO][TAMANHO]);
+void colisao_direta(char cancha[TAMANHO][TAMANHO], int row, int col, char bocha_movida, int deslocar);
 
 
 
@@ -238,9 +239,6 @@ void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col) 
     /**********************/
     /*SE CAIR EM LUGAR VAZIO*/
     if(cancha[row][col] == '-') {
-
-
-
         cancha[row][col] = jogador;
 
 
@@ -251,8 +249,8 @@ void lanca_bocha(char cancha[TAMANHO][TAMANHO], char jogador, int row, int col) 
 
 
 
-    } else {
-
+    } else { /*COLISÃO DIRETA*/
+        colisao_direta(cancha, row, col, cancha[row][col], 3);
 
 
     }
@@ -275,15 +273,21 @@ void colisao_tangente(char cancha[TAMANHO][TAMANHO], int row, int col, int deslo
 }
 
 
-void colisao_direta(char cancha[TAMANHO][TAMANHO], int row, int col, char bocha, int deslocar) {
+void colisao_direta(char cancha[TAMANHO][TAMANHO], int row, int col, char bocha_movida, int deslocar) {
 
-    char temp;
-    if(row - 1 >= 0) {
-        if(cancha[row - 1][col] == '-') {
-            /*Espaço acima é vazio*/
 
+    /*Ainda tem casas a deslocar*/
+    if(deslocar > 0) {
+        /*Se estiver dentro do limite superior da cancha*/
+        if(row - 1 > 0) {
+            row--;
+        }else {
+            row++;
         }
+
     }
+
+
 
 
 }
