@@ -315,19 +315,41 @@ void colisao_direta(char cancha[TAMANHO][TAMANHO], int row, int col, char jogado
     /*PARA ENTRAR NESSA FUNÇÃO, cancha[row][col] NÃO ESTÁ VAZIA*/
 
     char temp;
-    if(row > 0) { /*NÃO BATEU NA BORDA*/
-        if(cancha[row - 1][col] == '-') { /*ESPAÇO LIVRE*/
-            temp = cancha[row][col];
-            cancha[row][col] = jogador;
-            cancha[row - 1][col] = temp;
-            deslocar--;
-            row--; /*AGORA ESTÁ NA LINHA CIMA DA ORIGINAL*/
-            if(deslocar > 0) {
-                colisao_direta(cancha, row, col, cancha[row][col], deslocar);
-            }
+    int espacos = 0, movimentos = 0, limite = row;
+    while(limite >= 0) {/*CALCULA O MAXIMO DE MOVIMENTO POSSIVEL*/
+        limite--;
+        if(cancha[limite][col] == '-') { /*Se tiver espaço vago, pode mover*/
+            movimentos++;
+        }
+        if(movimentos == deslocar) {
+            break;
+        }
 
+    }
+    printf("Maximo de movimentos possiveis %d\n", movimentos);
+    if(movimentos > 0) { /*PODE DESLOCAR*/
+        temp = cancha[row][col]; /*GUARDA O OBJETO ATINGIDO*/
+        cancha[row][col] = jogador;/*COLOCA A BOCHA NO LOCAL*/
+        /*COMEÇA A MOVER*/
+        while(movimentos > 0) {
+            if(cancha[row - 1][col] == '-') {
+                cancha[row - 1][col] = temp;
+
+                row--;
+
+                temp = '-';
+                movimentos++;
+            }else {
+                if(row - 2 >= 0) {
+                    cancha[row - 2][col] = cancha[row - 1][col];
+                    cancha[row - 1][col] = temp;
+                }
+            }
         }
     }
+
+
+
 
 
 
