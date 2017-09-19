@@ -8,15 +8,41 @@
 1505177579 c:\users\ucs\bocha\lib.h
 	<stdlib.h>
 
-1505329289 source:c:\users\imagem\downloads\bocha\bocha\jogo.c
+1505484771 source:c:\users\imagem\downloads\bocha\bocha\jogo.c
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
 	"lib.h"
 	<locale.h>
 
-1505404634 c:\users\imagem\downloads\bocha\bocha\lib.h
+1505500118 c:\users\imagem\downloads\bocha\bocha\lib.h
 	<stdlib.h>
 	<ctype.h>
 	<windows.h>
+
+1505576300 source:c:\users\clodo\downloads\bocha\bocha\jogo.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	"lib.h"
+	<locale.h>
+
+1505612465 c:\users\clodo\downloads\bocha\bocha\lib.h
+	<stdlib.h>
+	<ctype.h>
+	<windows.h>
+	<math.h>
+
+1505710464 source:c:\users\ucs\downloads\bocha-colisao\bocha\jogo.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	"lib.h"
+	<locale.h>
+
+1505783016 c:\users\ucs\downloads\bocha-colisao\bocha\lib.h
+	<stdlib.h>
+	<ctype.h>
+	<windows.h>
+	<math.h>
 
