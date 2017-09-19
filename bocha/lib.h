@@ -316,6 +316,7 @@ void colisao_tangente(int row, int col, int deslocamento_horizontal, int desloca
 
 
 void colisao_direta(int row, int col, char jogador, int deslocar) {
+    /*----------------------cancha[row][col] OCUPADO----------------------------*/
     char temp;
     printf("COLISAO DIRETA EM cancha[%d][%d]\n", row, col);
     if(row - deslocar >= 0) {/*TEM PELO MENOS 3 LINHAS ACIMA*/
@@ -327,6 +328,14 @@ void colisao_direta(int row, int col, char jogador, int deslocar) {
             printf("cancha[%d][%d] = %c\n", row, col, jogador);
             system("pause");
             cancha[row][col] = jogador;
+        }else {
+
+            if( (cancha[row - 1][col] == '-') && (cancha[row - 2][col] == '-') && (cancha[row - 3][col] != '-') ) {
+                printf("ULTIMA LINHA OCUPADA: cancha[%d][%d]\n", row - 3, col);
+                cancha[row - 2][col] = cancha[row][col];
+                cancha[row][col] = jogador;
+                system("pause");
+            }
         }
     }
 
