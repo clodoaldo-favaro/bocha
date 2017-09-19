@@ -261,6 +261,9 @@ int valida_jogada(char jogada[4]) {
 }
 
 int calcula_erro(int linha_col) {
+    /*TESTE TESTE TESTE*/
+    return 0;
+    /*TESTE TESTE TESTE*/
     /*linha_col == 1, erro de linha*/
     /*linha_col == 2, erro de coluna*/
     int erro_linha[] = {-2, -1, 0, 1, 2};
@@ -313,9 +316,20 @@ void colisao_tangente(int row, int col, int deslocamento_horizontal, int desloca
 
 
 void colisao_direta(int row, int col, char jogador, int deslocar) {
+    char temp;
+    printf("COLISAO DIRETA EM cancha[%d][%d]\n", row, col);
+    if(row - deslocar >= 0) {/*TEM PELO MENOS 3 LINHAS ACIMA*/
+        /*SE OS 3 ESPAÇO ACIMA ESTIVEREM LIVRES*/
+        if( (cancha[row - 1][col] == '-') && (cancha[row - 2][col] == '-') && (cancha[row - 3][col] == '-') ) {
+            printf("cancha[%d][%d] recebe cancha[%d][%d]\n", row - 3, col, row, col);
+            printf("cancha[%d][%d] recebe %c\n", row - 3, col, cancha[row][col]);
+            cancha[row - 3][col] = cancha[row][col];
+            printf("cancha[%d][%d] = %c\n", row, col, jogador);
+            system("pause");
+            cancha[row][col] = jogador;
+        }
+    }
 
-    /*PARA ENTRAR NESSA FUNÇÃO, cancha[row][col] NÃO ESTÁ VAZIA*/
-    char temp = cancha[row][col];
 
 
 
