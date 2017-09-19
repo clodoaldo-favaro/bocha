@@ -319,7 +319,7 @@ void colisao_tangente(int row, int col, int deslocamento_horizontal, int desloca
 void colisao_direta(int row, int col, char jogador, int deslocar) {
     /*----------------------cancha[row][col] OCUPADO----------------------------*/
     char temp;
-    printf("COLISAO DIRETA EM cancha[%d][%d]\n", row, col);
+
     if(row - deslocar >= 0) {/*TEM PELO MENOS 3 LINHAS ACIMA*/
         /*SE OS 3 ESPAÇO ACIMA ESTIVEREM LIVRES*/
         if( (cancha[row - 1][col] == '-') && (cancha[row - 2][col] == '-') && (cancha[row - 3][col] == '-') ) {
