@@ -9,9 +9,9 @@ void lanca_bolim();
 void mostra_cancha();
 void inicializa_cancha();
 int calcula_erro(int linha_col);
-void partida(char alfabeto[TAMANHO]);
-char *jogada(char alfabeto[TAMANHO], char jogador);
-int valida_jogada(char jogada[3], char alfabeto[TAMANHO]);
+void partida();
+char *jogada(char jogador);
+int valida_jogada(char jogada[3]);
 void lanca_bocha(char jogador, int row, int col);
 void colisao_tangente(int row, int col, int deslocamento_horizontal, int deslocamento_vertical);
 int calcula_pontos(char jogador);
@@ -19,6 +19,7 @@ void colisao_direta(int row, int col, char jogador, int deslocar);
 
 /*DECLARA A CANCHA GLOBAL*/
 char cancha[TAMANHO][TAMANHO];
+char alfabeto[TAMANHO];
 
 
 void start_screen() {
@@ -41,15 +42,15 @@ void start_game()  {
     system("cls");
     int i;
 
-    char alfabeto[TAMANHO];
-    /*Declara o alfabeto permitido para a cancha*/
+
+    /*Inicializa o alfabeto permitido para a cancha*/
     for(i = 65; i < 65 + TAMANHO; i++) {
         alfabeto[i - 65] = (char)i;
     }
 
     inicializa_cancha();
     lanca_bolim();
-    partida(alfabeto);
+    partida();
     system("pause");
 
 
@@ -122,7 +123,7 @@ void inicializa_cancha() {
 
 
 /***********************CHAMA VÁRIAS OUTRAS, PODE-SE DIZER QUE É A PRINCIPAL*****************************************/
-void partida(char alfabeto[TAMANHO]) {
+void partida() {
     //TODO
     int duracao = 8, jogadas = 0;
     int pontos_A = 0, pontos_B = 0, jogadas_A = 0, jogadas_B = 0;
@@ -140,7 +141,7 @@ void partida(char alfabeto[TAMANHO]) {
             jogadas_B++;
         }
 
-        alvo = jogada(alfabeto, jogador_atual); /*RECEBE UM ENDEREÇO*/
+        alvo = jogada(jogador_atual); /*RECEBE UM ENDEREÇO*/
 
         col = alvo[0] - 65;/*COLUNA: CONVERTE LETRA PARA NUMERO INT A = 0, B = 1*/
         if(strlen(alvo) == 3) {
@@ -176,7 +177,7 @@ void partida(char alfabeto[TAMANHO]) {
 }
 /************************************************************************************************************************/
 
-char *jogada(char alfabeto[TAMANHO], char jogador) {
+char *jogada(char jogador) {
 
     char *jogada = malloc(sizeof(char) * 4); /*O PONTEIRO RECEBE UM ENDEREÇO COM O TAMANHO DE 3 BYTES*/
     int pedir = 1;
@@ -189,7 +190,7 @@ char *jogada(char alfabeto[TAMANHO], char jogador) {
 
         jogada[0] = toupper(jogada[0]);
 
-        if(valida_jogada(jogada, alfabeto)) {
+        if(valida_jogada(jogada)) {
             pedir = 0;
 
         } else {
@@ -203,7 +204,7 @@ char *jogada(char alfabeto[TAMANHO], char jogador) {
 
 }
 
-int valida_jogada(char jogada[4], char alfabeto[TAMANHO]) {
+int valida_jogada(char jogada[4]) {
 
     /*Calcula erro*/
     int teste, erro, numero;
