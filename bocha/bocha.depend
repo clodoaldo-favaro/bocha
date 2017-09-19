@@ -15,10 +15,11 @@
 	"lib.h"
 	<locale.h>
 
-1505500118 c:\users\imagem\downloads\bocha\bocha\lib.h
+1505837813 c:\users\imagem\downloads\bocha\bocha\lib.h
 	<stdlib.h>
 	<ctype.h>
 	<windows.h>
+	<math.h>
 
 1505576300 source:c:\users\clodo\downloads\bocha\bocha\jogo.c
 	<stdio.h>

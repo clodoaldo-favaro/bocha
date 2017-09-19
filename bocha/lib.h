@@ -16,6 +16,7 @@ void lanca_bocha(char jogador, int row, int col);
 void colisao_tangente(int row, int col, int deslocamento_horizontal, int deslocamento_vertical);
 int calcula_pontos(char jogador);
 void colisao_direta(int row, int col, char jogador, int deslocar);
+void movimentar_colisao_direta(char bocha, int start_row, int end_row, int col);
 
 /*DECLARA A CANCHA GLOBAL*/
 char cancha[TAMANHO][TAMANHO];
@@ -322,12 +323,11 @@ void colisao_direta(int row, int col, char jogador, int deslocar) {
     if(row - deslocar >= 0) {/*TEM PELO MENOS 3 LINHAS ACIMA*/
         /*SE OS 3 ESPAÇO ACIMA ESTIVEREM LIVRES*/
         if( (cancha[row - 1][col] == '-') && (cancha[row - 2][col] == '-') && (cancha[row - 3][col] == '-') ) {
-            printf("cancha[%d][%d] recebe cancha[%d][%d]\n", row - 3, col, row, col);
-            printf("cancha[%d][%d] recebe %c\n", row - 3, col, cancha[row][col]);
-            cancha[row - 3][col] = cancha[row][col];
-            printf("cancha[%d][%d] = %c\n", row, col, jogador);
-            system("pause");
-            cancha[row][col] = jogador;
+
+
+            movimentar_colisao_direta(jogador, row, row - 3, col);
+
+
         }else {
 
             if( (cancha[row - 1][col] == '-') && (cancha[row - 2][col] == '-') && (cancha[row - 3][col] != '-') ) {
@@ -386,6 +386,22 @@ int calcula_pontos(char jogador) {
     return pontuacao;
 
 
+}
+
+void movimentar_colisao_direta(char bocha, int start_row, int end_row, int col) {
+    int i;
+    char temp = cancha[start_row][col]; /*GUARDA O OBJETO QUE ESTAVA NO LOCAL ATINGIDO*/
+    cancha[start_row][col] = bocha; /*OBJETO QUE FOI LANÇADO AGORA OCUPA A POSIÇÃO*/
+    for(i = start_row - 1; i >= end_row; i--) { /*Começa da última linha e vai subindo até a linha escolhida*/
+        system("cls");
+        mostra_cancha();
+        Sleep(300);
+        cancha[i][col] = temp;
+        if(start_row - i >= 2) {
+            cancha[i + 1][col] = '-';
+        }
+    }
+    mostra_cancha();
 }
 
 
