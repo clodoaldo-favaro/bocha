@@ -33,3 +33,16 @@
 	<windows.h>
 	<math.h>
 
+1505710464 source:c:\users\ucs\downloads\bocha-colisao\bocha\jogo.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	"lib.h"
+	<locale.h>
+
+1505783016 c:\users\ucs\downloads\bocha-colisao\bocha\lib.h
+	<stdlib.h>
+	<ctype.h>
+	<windows.h>
+	<math.h>
+
