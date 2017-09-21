@@ -21,6 +21,7 @@ void movimentar_colisao_direta(char bocha, int start_row, int end_row, int col);
 /*DECLARA A CANCHA GLOBAL*/
 char cancha[TAMANHO][TAMANHO];
 char alfabeto[TAMANHO];
+char vazio = '-';
 
 
 void start_screen() {
@@ -115,7 +116,7 @@ void inicializa_cancha() {
     int i, j;
     for(i = 0; i < TAMANHO; i++) {
         for(j = 0; j < TAMANHO; j++) {
-            cancha[i][j] = '-';
+            cancha[i][j] = vazio;
         }
     }
 }
@@ -286,7 +287,7 @@ void lanca_bocha(char jogador, int row, int col) {
 
     /**********************/
     /*SE CAIR EM LUGAR VAZIO*/
-    if(cancha[row][col] == '-') {
+    if(cancha[row][col] == vazio) {
         cancha[row][col] = jogador;
 
 
@@ -316,10 +317,10 @@ void colisao_tangente(int row, int col) {
         if(cancha[row][col - 1] == 'A' || cancha[row][col - 1] == 'B') {
             /*HÁ UM OBJETO IMEDIATAMENTE À ESQUERDA DE ONDE CAIU A BOCHA LANÇADA*/
             /*CHECAR SE O LOCAL MAIS ESQUERDA ESTÁ VAZIO*/
-            if(cancha[row][col - 2] == '-') {
+            if(cancha[row][col - 2] == vazio) {
                 /*MOVER UMA CASA À ESQUERDA*/
                 cancha[row][col - 2] = cancha[row][col - 1];
-                cancha[row][col - 1] = '-';
+                cancha[row][col - 1] = vazio;
             }
         }
     }
@@ -333,10 +334,10 @@ void colisao_tangente(int row, int col) {
         if(cancha[row][col + 1] == 'A' || cancha[row][col + 1] == 'B') {
             /*HÁ UM OBJETO IMEDIATAMENTE À DIREITA DE ONDE CAIU A BOCHA LANÇADA*/
             /*CHECAR SE O LOCAL MAIS À DIREITA ESTÁ VAZIO*/
-            if(cancha[row][col + 2] == '-') {
+            if(cancha[row][col + 2] == vazio) {
                 /*MOVER UMA CASA À DIREITA*/
                 cancha[row][col + 2] = cancha[row][col + 1];
-                cancha[row][col + 1] = '-';
+                cancha[row][col + 1] = vazio;
             }
         }
     }
@@ -350,10 +351,10 @@ void colisao_tangente(int row, int col) {
         if(cancha[row - 1][col] == 'A' || cancha[row - 1][col] == 'B') {
             /*HÁ UMA BOCHA ACIMA DE ONDE CAIU A BOCHA LANÇADA*/
             /*CHECAR SE HÁ ESPAÇO PARA MOVER*/
-            if(cancha[row - 2][col] == '-') {
+            if(cancha[row - 2][col] == vazio) {
                 /*MOVER UMA CASA ACIMA*/
                 cancha[row - 2][col] = cancha[row - 1][col];
-                cancha[row - 1][col]= '-';
+                cancha[row - 1][col]= vazio;
             }
         }
     }
@@ -366,10 +367,10 @@ void colisao_tangente(int row, int col) {
         if(cancha[row + 1][col] == 'A' || cancha[row + 1][col] == 'B') {
             /*HÁ UMA BOCHA ABAIXO DE ONDE CAIU A BOCHA LANÇADA*/
             /*CHECAR SE O ESPAÇO ESTÁ LIVRE PARA MOVER*/
-            if(cancha[row + 2][col] == '-') {
+            if(cancha[row + 2][col] == vazio) {
                 /*MOVER UMA CASA ABAIXO*/
                 cancha[row + 2][col] = cancha[row + 1][col];
-                cancha[row + 1][col] = '-';
+                cancha[row + 1][col] = vazio;
             }
         }
     }
@@ -382,10 +383,10 @@ void colisao_tangente(int row, int col) {
         if(cancha[row - 1][col - 1] == 'A' || cancha[row - 1][col - 1] == 'B' ) {
             /*HÁ UMA BOCHA ACIMA E À ESQUERDA*/
             /*CHECAR SE HÁ ESPAÇO PARA ELA SER MOVIDA*/
-            if(cancha[row - 2][col - 2] == '-') {
+            if(cancha[row - 2][col - 2] == vazio) {
                 /*MOVER ACIMA E À ESQUERDA*/
                 cancha[row - 2][col - 2] = cancha[row - 1][col - 1];
-                cancha[row - 1][col - 1] = '-';
+                cancha[row - 1][col - 1] = vazio;
             }
         }
     }
@@ -399,10 +400,10 @@ void colisao_tangente(int row, int col) {
         if(cancha[row - 1][col + 1] == 'A' || cancha[row - 1][col + 1] == 'B') {
             /*HÁ UMA BOCHA ACIMA E À DIREITA*/
             /*VERIFICA SE HÁ ESPAÇO PARA MOVER*/
-            if(cancha[row - 2][col + 2] == '-') {
+            if(cancha[row - 2][col + 2] == vazio) {
                 /*MOVER ACIMA E À DIREITA*/
                 cancha[row - 2][col + 2] = cancha[row - 1][col + 1];
-                cancha[row - 1][col + 1] = '-';
+                cancha[row - 1][col + 1] = vazio;
             }
         }
     }
@@ -415,10 +416,27 @@ void colisao_tangente(int row, int col) {
         if(cancha[row + 1][col - 1] == 'A' || cancha[row + 1][col - 1] == 'B') {
             /*HÁ BOCHA ABAIXO E À ESQUERDA*/
             /*VERIFICA SE HÁ ESPAÇO PARA MOVER*/
-            if(cancha[row + 2][col - 2] == '-') {
+            if(cancha[row + 2][col - 2] == vazio) {
                 /*MOVER ABAIXO E À ESQUERDA*/
                 cancha[row + 2][col - 2] = cancha[row + 1][col - 1];
-                cancha[row + 1][col - 1] = '-';
+                cancha[row + 1][col - 1] = vazio;
+            }
+        }
+    }
+    /*----------------------------------------------*/
+
+
+    /*ABAIXO-DIREITA*/
+    /*CHECAR LIMITE ABAIXO-DIREITA DE ONDE CAIU A BOCHA LANÇADA*/
+    if(row < TAMANHO - 2 && col < TAMANHO - 2) {
+        /*CHECAR SE HÁ BOCHA ABAIXO E À DIREITA*/
+        if(cancha[row + 1][col + 1] == 'A' || cancha[row + 1][col + 1] == 'B') {
+            /*HÁ BOCHA ABAIXO E À DIREITA*/
+            /*VERIFICA SE HÁ ESPAÇO PARA MOVER*/
+            if(cancha[row + 2][col + 2] == vazio) {
+                /*MOVER ABAIXO E À DIREITA*/
+                cancha[row + 2][col + 2] = cancha[row + 1][col + 1];
+                cancha[row + 1][col + 1] = vazio;
             }
         }
     }
