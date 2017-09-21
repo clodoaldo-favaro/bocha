@@ -497,6 +497,12 @@ void colisao_direta(int row, int col, char jogador, int deslocar) {
                     cancha[row - 1][col] = vazio;
                     cancha[row][col] = jogador;
                 }
+            } else {
+                /*VAI ATINGIR A BORDA*/
+                cancha[row - 3][col] = cancha[row - 2][col];
+                cancha[row - 2][col] = cancha[row][col];
+                cancha[row][col] = jogador;
+
             }
         }
       /*CASO 2: TEM 2 LINHAS ACIMA*/
