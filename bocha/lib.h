@@ -13,7 +13,7 @@ void partida();
 char *jogada(char jogador);
 int valida_jogada(char jogada[3]);
 void lanca_bocha(char jogador, int row, int col);
-void colisao_tangente(int row, int col, int deslocamento_horizontal, int deslocamento_vertical);
+void colisao_tangente(int row, int col);
 int calcula_pontos(char jogador);
 void colisao_direta(int row, int col, char jogador, int deslocar);
 void movimentar_colisao_direta(char bocha, int start_row, int end_row, int col);
@@ -291,12 +291,6 @@ void lanca_bocha(char jogador, int row, int col) {
 
 
 
-        /*TESTAR COLISAO TANGENTE*/
-
-
-
-
-
     } else { /*COLISÃO DIRETA*/
         colisao_direta(row, col, jogador, 3);
 
@@ -304,12 +298,30 @@ void lanca_bocha(char jogador, int row, int col) {
     }
 
 
+    /*TESTAR COLISOES TANGENTES*/
+    colisao_tangente(row, col);
+
+
 
 
 
 }
 
-void colisao_tangente(int row, int col, int deslocamento_horizontal, int deslocamento_vertical) {
+void colisao_tangente(int row, int col) {
+    /*--------ESQUERDA----------*/
+    /*CHECAR LIMITE À ESQUERDA DO LOCAL ONDE CAIU A BOCHA LANÇADA*/
+    if(col - 1 > 0) {
+        /*CHECAR SE TEM ALGO À ESQUERDA DA BOCHA LANÇADA*/
+        if(cancha[row][col - 1] != '-') {
+            /*HÁ UM OBJETO IMEDIATAMENTE À ESQUERDA DE ONDE CAIU A BOCHA LANÇADA*/
+            /*CHECAR SE O LOCAL MAIS ESQUERDA ESTÁ VAZIO*/
+            if(cancha[row][col - 2] == '-') {
+                /*MOVER UMA CASA À ESQUERDA*/
+                cancha[row][col - 2] = cancha[row][col - 1];
+                cancha[row][col - 1] = '-';
+            }
+        }
+    }
 
 
 
@@ -336,7 +348,7 @@ void colisao_direta(int row, int col, char jogador, int deslocar) {
                 if(row - 4 >= 0) {
                     /*verificar se está vago*/
                     if(cancha[row - 4][col] == '-') {
-                        movimentar_colisao_direta(jogador, row, row - 4, col);
+                        movimentar_colisao_direta(jogador, row, row - 3, col);
                         /*cancha[row - 4][col] = cancha[row - 3][col];
                         cancha[row - 3][col] = cancha[row][col];
                         cancha[row][col] = jogador;*/
@@ -413,12 +425,9 @@ void movimentar_colisao_direta(char bocha, int start_row, int end_row, int col) 
         if(cancha[i][col] == '-') {
             cancha[i][col] = temp;
         }else {
-            /*Está ocupado, mover 1 para cima*/
             cancha[i - 1][col] = cancha[i][col];
             cancha[i][col] = temp;
-            i--;
         }
-
         if(start_row - i >= 2) {
             cancha[i + 1][col] = '-';
         }
