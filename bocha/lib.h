@@ -329,12 +329,25 @@ void colisao_direta(int row, int col, char jogador, int deslocar) {
 
 
         }else {
-
+            /*TERCEIRA CASA ACIMA OCUPADA*/
             if( (cancha[row - 1][col] == '-') && (cancha[row - 2][col] == '-') && (cancha[row - 3][col] != '-') ) {
-                printf("ULTIMA LINHA OCUPADA: cancha[%d][%d]\n", row - 3, col);
-                cancha[row - 2][col] = cancha[row][col];
-                cancha[row][col] = jogador;
-                system("pause");
+
+                /*VERIFICAR SE TEM ESPAÇO PARA MEXER PRA CIMA ROW - 3*/
+                if(row - 4 >= 0) {
+                    /*verificar se está vago*/
+                    if(cancha[row - 4][col] == '-') {
+                        movimentar_colisao_direta(jogador, row, row - 4, col);
+                        /*cancha[row - 4][col] = cancha[row - 3][col];
+                        cancha[row - 3][col] = cancha[row][col];
+                        cancha[row][col] = jogador;*/
+                    }else {
+                        /*row - 4 ocupado, então tem row - 3 e row - 4 no caminho, a bocha deslocada bate e volta*/
+                        cancha[row - 2][col] = cancha[row][col];
+                        cancha[row][col] = jogador;
+                    }
+                }
+
+
             }
         }
     }
@@ -396,7 +409,16 @@ void movimentar_colisao_direta(char bocha, int start_row, int end_row, int col) 
         system("cls");
         mostra_cancha();
         Sleep(300);
-        cancha[i][col] = temp;
+        /*testar se está vazio*/
+        if(cancha[i][col] == '-') {
+            cancha[i][col] = temp;
+        }else {
+            /*Está ocupado, mover 1 para cima*/
+            cancha[i - 1][col] = cancha[i][col];
+            cancha[i][col] = temp;
+            i--;
+        }
+
         if(start_row - i >= 2) {
             cancha[i + 1][col] = '-';
         }
