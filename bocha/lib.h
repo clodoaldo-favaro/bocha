@@ -328,7 +328,7 @@ void colisao_tangente(int row, int col) {
 
     /*-----------DIREITA-----------*/
     /*CHECAR LIMITE À DIREITA DO LOCAL ONDE CAIU A BOCHA LANÇADA*/
-    if(col + 1 < TAMANHO - 2) {
+    if(col  < TAMANHO - 2) {
         /*CHECAR SE TEM ALGO À DIREITA DA BOCHA LANÇADA*/
         if(cancha[row][col + 1] == 'A' || cancha[row][col + 1] == 'B') {
             /*HÁ UM OBJETO IMEDIATAMENTE À DIREITA DE ONDE CAIU A BOCHA LANÇADA*/
@@ -343,7 +343,7 @@ void colisao_tangente(int row, int col) {
     /*-------------------------------*/
 
 
-    /*CIMA*/
+    /*ACIMA*/
     /*CHECAR LIMITE ACIMA DE ONDE CAIU A BOCHA LANÇADA*/
     if(row >= 2) {
         /*CHECAR SE TEM ALGO ACIMA DE ONDE CAIU A BOCHA (NÃO O BOLIM)*/
@@ -357,6 +357,23 @@ void colisao_tangente(int row, int col) {
             }
         }
     }
+    /*----------------------------------------------*/
+
+    /*ABAIXO*/
+    /*CHECAR LIMITE ABAIXO DE ONDE CAIU A BOCHA LANÇADA*/
+    if(row < TAMANHO  - 2) {
+        /*CHECAR SE HÁ OUTRA BOCHA ABAIXO DE ONDE CAIU A BOCHA LANÇADA*/
+        if(cancha[row + 1][col] == 'A' || cancha[row + 1][col] == 'B') {
+            /*HÁ UMA BOCHA ABAIXO DE ONDE CAIU A BOCHA LANÇADA*/
+            /*CHECAR SE O ESPAÇO ESTÁ LIVRE PARA MOVER*/
+            if(cancha[row + 2][col] == '-') {
+                /*MOVER UMA CASA ABAIXO*/
+                cancha[row + 2][col] = cancha[row + 1][col];
+                cancha[row + 1][col] = '-';
+            }
+        }
+    }
+    /*---------------------------------------------*/
 
 
 
