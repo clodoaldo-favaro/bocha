@@ -308,11 +308,12 @@ void lanca_bocha(char jogador, int row, int col) {
 }
 
 void colisao_tangente(int row, int col) {
+
     /*--------ESQUERDA----------*/
     /*CHECAR LIMITE À ESQUERDA DO LOCAL ONDE CAIU A BOCHA LANÇADA*/
     if(col - 1 > 0) {
-        /*CHECAR SE TEM ALGO À ESQUERDA DA BOCHA LANÇADA*/
-        if(cancha[row][col - 1] != '-') {
+        /*CHECAR SE TEM ALGO À ESQUERDA DA BOCHA LANÇADA (MAS NÃO O BOLIM)*/
+        if(cancha[row][col - 1] == 'A' || cancha[row][col - 1] == 'B') {
             /*HÁ UM OBJETO IMEDIATAMENTE À ESQUERDA DE ONDE CAIU A BOCHA LANÇADA*/
             /*CHECAR SE O LOCAL MAIS ESQUERDA ESTÁ VAZIO*/
             if(cancha[row][col - 2] == '-') {
@@ -322,6 +323,25 @@ void colisao_tangente(int row, int col) {
             }
         }
     }
+    /*-------------------------------*/
+
+
+    /*-----------DIREITA-----------*/
+    /*CHECAR LIMITE À DIREITA DO LOCAL ONDE CAIU A BOCHA LANÇADA*/
+    if(col + 1 < TAMANHO - 2) {
+        /*CHECAR SE TEM ALGO À DIREITA DA BOCHA LANÇADA*/
+        if(cancha[row][col + 1] == 'A' || cancha[row][col + 1] == 'B') {
+            /*HÁ UM OBJETO IMEDIATAMENTE À DIREITA DE ONDE CAIU A BOCHA LANÇADA*/
+            /*CHECAR SE O LOCAL MAIS À DIREITA ESTÁ VAZIO*/
+            if(cancha[row][col + 2] == '-') {
+                /*MOVER UMA CASA À DIREITA*/
+                cancha[row][col + 2] = cancha[row][col + 1];
+                cancha[row][col + 1] = '-';
+            }
+        }
+    }
+    /*-------------------------------*/
+
 
 
 
