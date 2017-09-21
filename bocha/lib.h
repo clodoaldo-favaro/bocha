@@ -375,6 +375,22 @@ void colisao_tangente(int row, int col) {
     }
     /*---------------------------------------------*/
 
+    /*ACIMA-ESQUERDA*/
+    /*CHECAR LIMITE ACIMA-ESQUERDA DE ONDE CAIU A BOCHA LANÇADA*/
+    if(row >= 2 && col >= 2) {
+        /*CHECAR SE HÁ ALGUMA BOCHA ACIMA E À ESQUERDA*/
+        if(cancha[row - 1][col - 1] == 'A' || cancha[row - 1][col - 1] == 'B' ) {
+            /*HÁ UMA BOCHA ACIMA E À ESQUERDA*/
+            /*CHECAR SE HÁ ESPAÇO PARA ELA SER MOVIDA*/
+            if(cancha[row - 2][col - 2] == '-') {
+                /*MOVER ACIMA E À ESQUERDA*/
+                cancha[row - 2][col - 2] = cancha[row - 1][col - 1];
+                cancha[row - 1][col - 1] = '-';
+            }
+        }
+    }
+    /*---------------------------------------------*/
+
 
 
 
