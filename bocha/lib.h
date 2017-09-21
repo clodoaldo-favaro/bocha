@@ -17,11 +17,13 @@ void colisao_tangente(int row, int col);
 int calcula_pontos(char jogador);
 void colisao_direta(int row, int col, char jogador, int deslocar);
 void movimentar_colisao_direta(char bocha, int start_row, int end_row, int col);
+void vai_dois_volta_um(char bocha, int start_row, int end_row, int col);
 
 /*DECLARA A CANCHA GLOBAL*/
 char cancha[TAMANHO][TAMANHO];
 char alfabeto[TAMANHO];
 char vazio = '-';
+int testa_cima = 1;
 
 
 void start_screen() {
@@ -284,7 +286,7 @@ int calcula_erro(int linha_col) {
 
 void lanca_bocha(char jogador, int row, int col) {
 
-
+    testa_cima = 1;
     /**********************/
     /*SE CAIR EM LUGAR VAZIO*/
     if(cancha[row][col] == vazio) {
@@ -346,7 +348,7 @@ void colisao_tangente(int row, int col) {
 
     /*ACIMA*/
     /*CHECAR LIMITE ACIMA DE ONDE CAIU A BOCHA LANÇADA*/
-    if(row >= 2) {
+    if(row >= 2 && testa_cima) {
         /*CHECAR SE TEM ALGO ACIMA DE ONDE CAIU A BOCHA (NÃO O BOLIM)*/
         if(cancha[row - 1][col] == 'A' || cancha[row - 1][col] == 'B') {
             /*HÁ UMA BOCHA ACIMA DE ONDE CAIU A BOCHA LANÇADA*/
@@ -452,9 +454,10 @@ void colisao_direta(int row, int col, char jogador, int deslocar) {
     /*----------------------cancha[row][col] OCUPADO----------------------------*/
     char temp;
 
-    if(row - deslocar >= 0) {/*TEM PELO MENOS 3 LINHAS ACIMA*/
+    /*CASO 1: TEM PELO MENOS 3 LINHAS ACIMA*/
+    if(row >= 3) {
         /*SE OS 3 ESPAÇO ACIMA ESTIVEREM LIVRES*/
-        if( (cancha[row - 1][col] == '-') && (cancha[row - 2][col] == '-') && (cancha[row - 3][col] == '-') ) {
+        if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] == vazio) && (cancha[row - 3][col] == vazio) ) {
 
 
             movimentar_colisao_direta(jogador, row, row - 3, col);
@@ -462,12 +465,12 @@ void colisao_direta(int row, int col, char jogador, int deslocar) {
 
         }else {
             /*TERCEIRA CASA ACIMA OCUPADA*/
-            if( (cancha[row - 1][col] == '-') && (cancha[row - 2][col] == '-') && (cancha[row - 3][col] != '-') ) {
+            if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] == vazio) && (cancha[row - 3][col] != vazio) ) {
 
                 /*VERIFICAR SE TEM ESPAÇO PARA MEXER PRA CIMA ROW - 3*/
                 if(row - 4 >= 0) {
                     /*verificar se está vago*/
-                    if(cancha[row - 4][col] == '-') {
+                    if(cancha[row - 4][col] == vazio) {
                         movimentar_colisao_direta(jogador, row, row - 3, col);
                         /*cancha[row - 4][col] = cancha[row - 3][col];
                         cancha[row - 3][col] = cancha[row][col];
@@ -482,19 +485,14 @@ void colisao_direta(int row, int col, char jogador, int deslocar) {
 
             }
         }
+      /*CASO 2: TEM 2 LINHAS ACIMA*/
+    } else if(row == 2) {
+        /*SE OS 2 ESPAÇOS ACIMA ESTIVEREM LIVRES*/
+        if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] == vazio) ) {
+            vai_dois_volta_um(jogador, row, row - 2, col);
+            testa_cima = 0; /*Para evitar que ele considere a volta da bocha como colisao tangente*/
+        }
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }
@@ -542,16 +540,40 @@ void movimentar_colisao_direta(char bocha, int start_row, int end_row, int col) 
         mostra_cancha();
         Sleep(300);
         /*testar se está vazio*/
-        if(cancha[i][col] == '-') {
+        if(cancha[i][col] == vazio) {
             cancha[i][col] = temp;
         }else {
             cancha[i - 1][col] = cancha[i][col];
             cancha[i][col] = temp;
         }
         if(start_row - i >= 2) {
-            cancha[i + 1][col] = '-';
+            cancha[i + 1][col] = vazio;
         }
     }
+    mostra_cancha();
+}
+
+void vai_dois_volta_um(char bocha, int start_row, int end_row, int col) {
+    int i;
+    char temp = cancha[start_row][col];
+    cancha[start_row][col] = bocha;
+    for(i = start_row - 1; i >= end_row; i--) {
+        system("cls");
+        mostra_cancha();
+        Sleep(300);
+        if(cancha[i][col] == vazio) {
+            cancha[i][col] = temp;
+        }
+        if(start_row - i >= 2) {
+            cancha[i + 1][col] = vazio;
+        }
+    }
+    system("cls");
+    mostra_cancha();
+    Sleep(300);
+    cancha[i + 2][col] = temp;
+    cancha[i + 1][col] = vazio;
+    system("cls");
     mostra_cancha();
 }
 
