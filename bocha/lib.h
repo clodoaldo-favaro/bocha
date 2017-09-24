@@ -15,7 +15,7 @@ int valida_jogada(char jogada[3]);
 void lanca_bocha(char jogador, int row, int col);
 void colisao_tangente(int row, int col);
 int calcula_pontos(char jogador);
-void colisao_direta(int row, int col, char jogador, int deslocar);
+void colisao_direta(int row, int col, char jogador);
 void movimentar_colisao_direta(char bocha, int start_row, int end_row, int col);
 void vai_dois_volta_um(char bocha, int start_row, int end_row, int col);
 
@@ -296,16 +296,17 @@ void lanca_bocha(char jogador, int row, int col) {
 
 
 
-    } else { /*COLISÃO DIRETA*/
+    } else {
+        /*CAIU EM CIMA DE OUTRO OBJETO*/
         /*PODE ALTERAR O ROW E COL ORIGINAIS*/
-        colisao_direta(row, col, jogador, 3);
+        colisao_direta(row, col, jogador);
 
 
     }
 
 
     /*TESTAR COLISOES TANGENTES*/
-    colisao_tangente(row_original, col_original);
+    /*colisao_tangente(row_original, col_original);*/
 
 
 
@@ -453,126 +454,34 @@ void colisao_tangente(int row, int col) {
 }
 
 
-void colisao_direta(int row, int col, char jogador, int deslocar) {
-    /*----------------------cancha[row][col] OCUPADO----------------------------*/
-
-    /*LÓGICA GERAL: A BOCHA ATINGIDA DEVE MOVER 3 CASAS PARA CIMA*/
-    /*SE ENCONTRAR OUTRA BOCHA NO CAMINHO, ELA PÁRA, E A BOCHA ATINGIDA COMPLETA OS MOVIMENTOS RESTANTES DOS 3*/
-    /*SE ENCONTRA OUTRA BOCHA NO ÚLTIMO MOVIMENTO (NO 3), ELA DESLOCA A BOCHA PARA CIMA SE HOUVER ESPAÇO, SENÃO BATE E VOLTA PARA ROW - 2*/
-    /*CASO 1: TEM PELO MENOS 3 LINHAS ACIMA------------------------------------------*/
-    if(row >= 3) {
-        /*SE OS 3 ESPAÇO ACIMA ESTIVEREM LIVRES*/
-        if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] == vazio) && (cancha[row - 3][col] == vazio) ) {
-
-            movimentar_colisao_direta(jogador, row, row - 3, col);
-
-        }else if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] == vazio) && (cancha[row - 3][col] != vazio) ) {
-            /*------------------UMA DAS 3 CASAS ACIMA OCUPADAS------------------------*/
-            /*TERCEIRA CASA ACIMA OCUPADA*/
-                /*VERIFICAR SE TEM ESPAÇO PARA MEXER PRA CIMA ROW - 3*/
-                if(row >= 4) {
-                    /*verificar se está vago*/
-                    if(cancha[row - 4][col] == vazio) {
-                        movimentar_colisao_direta(jogador, row, row - 3, col);
-                        /*cancha[row - 4][col] = cancha[row - 3][col];
-                        cancha[row - 3][col] = cancha[row][col];
-                        cancha[row][col] = jogador;*/
-                    }else {
-                        /*se row - 4 estiver ocupado, a bocha deslocada bate em row - 3 e volta para row - 2*/
-
-                        cancha[row - 2][col] = cancha[row][col];
-                        cancha[row][col] = jogador;
-                    }
-                }
-        }else if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] != vazio) && (cancha[row - 3][col] == vazio) ) {
-            /*SEGUNDA CASA ACIMA OCUPADA*/
-            /*SE TIVER ESPAÇO, EMPURRA A SEGUNDA PARA A TERCEIRA CASA*/
-            /*MOVIMENTOS: BOCHA ATINGIDA PARA ROW - 1 >> BOCHA ATINGIDA PARA ROW - 2 OCUPADA >> BOCHA QUE OCUPAVA ROW - 2 PARA ROW - 3*/
-            cancha[row - 3][col] = cancha[row - 2][col];
-            cancha[row - 2][col] = cancha[row][col];
-            cancha[row][col] = jogador;
-
-        } else if( (cancha[row - 1][col] != vazio) && (cancha[row - 2][col] == vazio) && (cancha[row - 3][col] == vazio) ) {
-            /*PRIMEIRA CASA ACIMA OCUPADA*/
-            /*SE TIVER ESPAÇO A DA PRIMEIRA CASA ACIMA FICA EM ROW - 4, E A EM ROW FICA EM ROW - 3*/
-            if(row >= 4) {
-                if(cancha[row - 4][col] == vazio) {
-                        cancha[row - 4][col] = cancha[row - 1][col];
-                        cancha[row - 3][col] = cancha[row][col];
-                        cancha[row][col] = jogador;
-                        cancha[row - 2][col] = vazio;
-                        cancha[row - 1][col] = vazio;
-                }else {
-                    cancha[row - 3][col] = cancha[row - 1][col];
-                    cancha[row - 2][col] = cancha[row][col];
-                    cancha[row - 1][col] = vazio;
-                    cancha[row][col] = jogador;
-                }
+void colisao_direta(int row, int col, char jogador) {
+    int deslocar = 3, i = 1, deslocamento = 0;
+    char bocha_deslocada = cancha[row][col];
+    /*EQUANTO NÃO PASSAR DOS 3 MOVIMENTOS*/
+    while(i <= deslocar) {
+        /*CHECA SE BATEU NA BORDA*/
+        if((row - i) >= 0) {
+            /*CHECA SE O ESPAÇO É VAZIO*/
+            if(cancha[row - i][col] == vazio) {
+                i++;
+                deslocamento++;
             }else {
-                cancha[row - 3][col] = cancha[row - 1][col];
-                cancha[row - 2][col] = cancha[row][col];
-                cancha[row - 1][col] = vazio;
-                cancha[row][col] = jogador;
-            }
-
-        } else if((cancha[row - 1][col] != vazio) && (cancha[row - 2][col] != vazio) && (cancha[row - 3][col] == vazio)) {
-            /*PRIMEIRA E SEGUNDA CASAS ACIMA OCUPADAS*/
-            cancha[row - 3][col] = cancha[row - 2][col];
-            cancha[row - 2][col] = cancha[row - 1][col];
-            cancha[row - 1][col] = cancha[row][col];
-            cancha[row][col] = jogador;
-        } else if((cancha[row - 1][col] != vazio) && (cancha[row - 2][col] == vazio) && (cancha[row - 3][col] != vazio) ) {
-            /*PRIMEIRA E TERCEIRA OCUPADAS*/
-            cancha[row - 2][col] = cancha[row - 1][col];
-            cancha[row - 1][col] = cancha[row][col];
-            cancha[row][col] = jogador;
-
-        } else if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] != vazio) && (cancha[row - 3][col] != vazio) ) {
-            /*SEGUNDA E TERCEIRA OCUPADAS*/
-            cancha[row - 1][col] = cancha[row][col];
-            cancha[row][col] = jogador;
-        } else if( (cancha[row - 1][col] != vazio) && (cancha[row - 2][col] != vazio) && (cancha[row - 3][col] != vazio) ) {
-            /*TODAS AS 3 CASAS ACIMAS OCUPADAS*/
-            /*BATE E VOLTA PRA BAIXO, SE TIVER ESPAÇO*/
-            if(row < TAMANHO - 1) {
-                testa_baixo = 0;
-                if(cancha[row + 1][col] == vazio) {
-                    cancha[row + 1][col] = jogador;
-
-                }else {
-                    /*MOVE PARA A DIREITA-ABAIXO OU ESQUERDA-ABAIXO*/
-                    if(cancha[row + 1][col - 1] == vazio) {
-                        cancha[row + 1][col - 1] = jogador;
-                    }else if(cancha[row + 1][col + 1] == vazio) {
-                        cancha[row + 1][col + 1] = jogador;
-                    }else if(cancha[row][col - 1] == vazio) {
-                        cancha[row][col - 1] = jogador;
-                    }
+                /*TESTAR SE TEM ESPAÇO PARA MOVER PRA CIMA AINDA*/
+                if(row - i > 0) {
+                    /*ESPAÇO NÃO É VAZIO, NOVO OBJETO A SER DESLOCADO*/
+                    bocha_deslocada = cancha[row - i][col];
+                    /*E O LUGAR DESSA BOCHA DESLOCADA PASSA A SER OCUPADO PELO OBJETO QUE BATEU*/
+                    cancha[row - i][col] = cancha[row][col];
                 }
+                i++;
             }
-        }
-
-
-
-      /*CASO 2: TEM 2 LINHAS ACIMA*/
-    } else if(row == 2) {
-        /*SE OS 2 ESPAÇOS ACIMA ESTIVEREM LIVRES*/
-        if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] == vazio) ) {
-            vai_dois_volta_um(jogador, row, row - 2, col);
-            testa_cima = 0; /*Para evitar que ele considere a volta da bocha como colisao tangente*/
-        }else if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] != vazio) ) {
-            /*COLISAO NA LINHA DOIS, MAS DUAS CASAS ACIMA NÃO É VAZIO*/
-            cancha[row - 1][col] = cancha[row][col]; /*BOCHA ATINGIDA MOVE UMA VEZ PARA CIMA APENAS*/
-            cancha[row][col] = jogador; /*BOCHA LANÇADA CAI NO LUGAR*/
-        } else if( (cancha[row - 1][col] != vazio) && (cancha[row - 2][col] == vazio) ) {
-            /*COLISAO NA LINHA 2, MAS UMA CASA ACIMA ESTÁ OCUPADA*/
-            cancha[row - 2][col] = cancha[row - 1][col];
-            cancha[row - 1][col] = cancha[row][col];
-            cancha[row][col] = jogador;
+        }else {
+            deslocamento--;
+            i++;
         }
     }
-
-
+    cancha[row - deslocamento][col] = bocha_deslocada;
+    cancha[row][col] = jogador;
 }
 
 int calcula_pontos(char jogador) {
