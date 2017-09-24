@@ -212,7 +212,7 @@ char *jogada(char jogador) {
 int valida_jogada(char jogada[4]) {
 
     /*Calcula erro*/
-    int teste, erro, numero;
+    int erro, numero;
     jogada[0] = jogada[0] + calcula_erro(2); /*Calcula erro da coluna*/
 
     if(strlen(jogada) == 3) {
@@ -455,33 +455,126 @@ void colisao_tangente(int row, int col) {
 
 
 void colisao_direta(int row, int col, char jogador) {
-    int deslocar = 3, i = 1, deslocamento = 0;
-    char bocha_deslocada = cancha[row][col];
-    /*EQUANTO NÃO PASSAR DOS 3 MOVIMENTOS*/
-    while(i <= deslocar) {
-        /*CHECA SE BATEU NA BORDA*/
-        if((row - i) >= 0) {
-            /*CHECA SE O ESPAÇO É VAZIO*/
-            if(cancha[row - i][col] == vazio) {
-                i++;
-                deslocamento++;
-            }else {
-                /*TESTAR SE TEM ESPAÇO PARA MOVER PRA CIMA AINDA*/
-                if(row - i > 0) {
-                    /*ESPAÇO NÃO É VAZIO, NOVO OBJETO A SER DESLOCADO*/
-                    bocha_deslocada = cancha[row - i][col];
-                    /*E O LUGAR DESSA BOCHA DESLOCADA PASSA A SER OCUPADO PELO OBJETO QUE BATEU*/
-                    cancha[row - i][col] = cancha[row][col];
-                }
-                i++;
-            }
+
+   /*PRIMEIRO TESTE: VERIFICAR SE O LOCAL DE COLISÃO ESTÁ NA LINHA 3 OU MAIOR(MAIS PARA BAIXO NA MATRIZ) */
+   if(row >= 3) {
+        /*3 CASAS ACIMA VAZIAS*/
+        if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] == vazio) && (cancha[row - 3][col] == vazio) ) {
+            cancha[row - 3][col] = cancha[row][col];
+            cancha[row][col] = jogador;   /*OK*/
         }else {
-            deslocamento--;
-            i++;
+            /*UMA OU MAIS CASAS OCUPADAS*/
+
+            /*PRIMEIRA CASA OCUPADA*/
+            if( (cancha[row - 1][col] != vazio) && (cancha[row - 2][col] == vazio) && (cancha[row - 3][col] == vazio) ) {
+                cancha[row - 3][col] = cancha[row - 1][col];
+                cancha[row - 1][col] = cancha[row][col];
+                cancha[row][col] = jogador; /*OK*/
+            }
+            /*SEGUNDA CASA OCUPADA*/
+            else if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] != vazio) && (cancha[row - 3][col] == vazio) ) {
+                cancha[row - 3][col] = cancha[row - 2][col];
+                cancha[row - 2][col] = cancha[row][col];
+                cancha[row][col] = jogador; /*OK*/
+            }
+            /*TERCEIRA CASA OCUPADA*/
+            else if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] == vazio) && (cancha[row - 3][col] != vazio) ) {
+                /*SE TIVER ESPAÇO VAZIO ACIMA DA TERCEIRA CASA*/
+                if(cancha[row - 4][col] == vazio && row > 3) {
+                    cancha[row - 4][col] = cancha[row - 3][col];
+                    cancha[row - 3][col] = cancha[row][col];
+                    cancha[row][col] = jogador; /*OK*/
+                }else {
+                    /*SENÃO MOVE SÓ DUAS VEZES E PÁRA*/
+                    cancha[row - 2][col] = cancha[row][col];
+                    cancha[row][col] = jogador; /*OK*/
+                }
+
+            }
+            /*PRIMEIRA E SEGUNDA CASAS OCUPADAS*/
+            else if( (cancha[row - 1][col] != vazio) && (cancha[row - 2][col] != vazio) && (cancha[row - 3][col] == vazio) ) {
+                cancha[row - 3][col] = cancha[row - 2][col];
+                cancha[row - 2][col] = cancha[row - 1][col];
+                cancha[row - 1][col] = cancha[row][col];
+                cancha[row][col] = jogador; /*OK*/
+            }
+            /*PRIMEIRA E TERCEIRA CASAS OCUPADAS*/
+            else if( (cancha[row - 1][col] != vazio) && (cancha[row - 2][col] == vazio) && (cancha[row - 3][col] != vazio) ) {
+                cancha[row - 2][col] = cancha[row - 1][col];
+                cancha[row - 1][col] = cancha[row][col];
+                cancha[row][col] = jogador;
+            }
+            /*SEGUNDA E TERCEIRA CASAS OCUPADAS*/
+            else if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] != vazio) && (cancha[row - 3][col] != vazio) ) {
+                cancha[row - 1][col] = cancha[row][col];
+                cancha[row][col] = jogador;
+            }
+            /*TODAS AS CASAS ACIMA OCUPADAS*/
+            else {
+                /*SE HOUVER ESPAÇO UMA CASA ABAIXO*/
+                if(row < TAMANHO - 1) {
+                    /*SE O ESPAÇO ESTIVER VAZIO*/
+                    if(cancha[row + 1][col] == vazio) {
+                        cancha[row + 1][col] = jogador;
+                    }else {
+                        /*CHECAR DIAGONAIS INFERIORES*/
+                        if(cancha[row + 1][col - 1] == vazio && col > 0) {
+                           cancha[row + 1][col - 1] = jogador;
+                        }else if(cancha[row + 1][col + 1] == vazio && col < TAMANHO - 1) {
+                            cancha[row + 1][col + 1] = jogador;
+                        }else {
+                            /*CHECAR OS LADOS*/
+                            if(cancha[row][col - 1] == vazio && col > 0) {
+                                cancha[row][col - 1] = jogador;
+                            }else if(cancha[row][col + 1] == vazio && col < TAMANHO - 1) {
+                                cancha[row][col + 1] = jogador;
+                            }else if(cancha[row][col - 1] == vazio && col > 0) {
+                                cancha[row][col - 1] = jogador;
+                            }else {
+                                /*CHECAR DIAGONAIS SUPERIORES*/
+                                if(cancha[row - 1][col - 1] == vazio && col > 0) {
+                                    cancha[row - 1][col - 1] = jogador;
+                                }else if(cancha[row - 1][col + 1] == vazio && col < TAMANHO - 1) {
+                                    cancha[row - 1][col + 1] = jogador;
+                                }else {
+                                    /*CHECAR ALGUMAS CASAS ALEATÓRIAS*/
+                                    if(cancha[row][col - 2] == vazio && col >= 2) {
+                                        cancha[row][col - 2] = jogador;
+                                    }else if(cancha[row - 1][col - 2] == vazio && col >= 2) {
+                                        cancha[row - 1][col - 2] = jogador;
+                                    }else if(cancha[row][col + 2] == vazio && col < TAMANHO - 2) {
+                                        cancha[row][col + 2] = jogador;
+                                    }else if(cancha[row - 1][col + 2] == vazio && col < TAMANHO - 2) {
+                                        cancha[row - 1][col + 2] = jogador;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }else {
+                    /*CHECAR NOS LADOS*/
+                    if(cancha[row][col - 1] == vazio && col > 0) {
+                        cancha[row][col - 1] = jogador;
+                    }else if(cancha[row][col + 1] == vazio && col < TAMANHO - 1) {
+                        cancha[row][col + 1] = jogador;
+                    }else {
+                        /*CHECAR DIAGONAIS SUPERIORES*/
+                        if(cancha[row - 1][col - 1] == vazio && col > 0) {
+                            cancha[row - 1][col - 1] = jogador;
+                        }else if(cancha[row - 1][col + 1] == vazio && col < TAMANHO - 1) {
+                            cancha[row - 1][col + 1]= jogador;
+                        }
+                    }
+                }
+            }
         }
-    }
-    cancha[row - deslocamento][col] = bocha_deslocada;
-    cancha[row][col] = jogador;
+   }else if(row == 2) {
+
+   }else if(row == 1) {
+
+   }else if(row == 0) {
+
+   }
 }
 
 int calcula_pontos(char jogador) {
