@@ -13,17 +13,14 @@ void partida();
 char *jogada(char jogador);
 int valida_jogada(char jogada[3]);
 void lanca_bocha(char jogador, int row, int col);
-void colisao_tangente(int row, int col);
 int calcula_pontos(char jogador);
+void colisao_tangente(int row, int col, int up, int down, int left, int right, int left_up, int right_up, int left_down, int right_down);
 void colisao_direta(int row, int col, char jogador);
-void movimentar_colisao_direta(char bocha, int start_row, int end_row, int col);
-void vai_dois_volta_um(char bocha, int start_row, int end_row, int col);
 
 /*DECLARA A CANCHA GLOBAL*/
 char cancha[TAMANHO][TAMANHO];
 char alfabeto[TAMANHO];
 char vazio = '-';
-int testa_cima = 1, testa_baixo = 1;
 int row_original, col_original;
 
 
@@ -287,13 +284,12 @@ int calcula_erro(int linha_col) {
 /*VAI RECEBER O row_original e o col_original, que é onde a bocha atingiu*/
 void lanca_bocha(char jogador, int row, int col) {
 
-    testa_cima = 1;
-    testa_baixo = 1;
+
     /**********************/
     /*SE CAIR EM LUGAR VAZIO*/
     if(cancha[row][col] == vazio) {
         cancha[row][col] = jogador;
-
+        colisao_tangente(row_original, col_original, 1, 1, 1, 1, 1, 1, 1, 1);
 
 
     } else {
@@ -306,7 +302,7 @@ void lanca_bocha(char jogador, int row, int col) {
 
 
     /*TESTAR COLISOES TANGENTES*/
-    /*colisao_tangente(row_original, col_original);*/
+
 
 
 
@@ -314,11 +310,11 @@ void lanca_bocha(char jogador, int row, int col) {
 
 }
 
-void colisao_tangente(int row, int col) {
+void colisao_tangente(int row, int col, int up, int down, int left, int right, int left_up, int right_up, int left_down, int right_down) {
 
     /*--------ESQUERDA----------*/
-    /*PARA MOVER A BOCHA À ESQUERDA, A BOCHA LANÇADA DEVE TER CAÍDO NA COLUNA 2 OU MAIOR*/
-    if(col >= 2) {
+    /*PARA MOVER A BOCHA À ESQUERDA, A BOCHA LANÇADA DEVE TER CAÍDO NA COLUNA 2 OU MAIOR, E A OPCAO LEFT DEVE SER TRUE (1)*/
+    if(col >= 2 && left) {
         /*CHECAR SE TEM ALGO À ESQUERDA DA BOCHA LANÇADA (MAS NÃO O BOLIM)*/
         if(cancha[row][col - 1] == 'A' || cancha[row][col - 1] == 'B') {
             /*HÁ UM OBJETO IMEDIATAMENTE À ESQUERDA DE ONDE CAIU A BOCHA LANÇADA*/
@@ -334,8 +330,8 @@ void colisao_tangente(int row, int col) {
 
 
     /*-----------DIREITA-----------*/
-    /*CHECAR LIMITE À DIREITA DO LOCAL ONDE CAIU A BOCHA LANÇADA*/
-    if(col  < TAMANHO - 2) {
+    /*CHECAR LIMITE À DIREITA DO LOCAL ONDE CAIU A BOCHA LANÇADA E SE RIGHT ESTÁ ATIVADO*/
+    if(col  < TAMANHO - 2 && right) {
         /*CHECAR SE TEM ALGO À DIREITA DA BOCHA LANÇADA*/
         if(cancha[row][col + 1] == 'A' || cancha[row][col + 1] == 'B') {
             /*HÁ UM OBJETO IMEDIATAMENTE À DIREITA DE ONDE CAIU A BOCHA LANÇADA*/
@@ -351,8 +347,8 @@ void colisao_tangente(int row, int col) {
 
 
     /*ACIMA*/
-    /*CHECAR LIMITE ACIMA DE ONDE CAIU A BOCHA LANÇADA*/
-    if(row >= 2 && testa_cima) {
+    /*CHECAR LIMITE ACIMA DE ONDE CAIU A BOCHA LANÇADA E SE A OPÇÃO UP ESTÁ ATIVADA*/
+    if(row >= 2 && up) {
         /*CHECAR SE TEM ALGO ACIMA DE ONDE CAIU A BOCHA (NÃO O BOLIM)*/
         if(cancha[row - 1][col] == 'A' || cancha[row - 1][col] == 'B') {
             /*HÁ UMA BOCHA ACIMA DE ONDE CAIU A BOCHA LANÇADA*/
@@ -367,8 +363,8 @@ void colisao_tangente(int row, int col) {
     /*----------------------------------------------*/
 
     /*ABAIXO*/
-    /*CHECAR LIMITE ABAIXO DE ONDE CAIU A BOCHA LANÇADA*/
-    if(row < TAMANHO  - 2 && testa_baixo) {
+    /*CHECAR LIMITE ABAIXO DE ONDE CAIU A BOCHA LANÇADA E SE DOWN ESTÁ ATIVADO*/
+    if(row < TAMANHO  - 2 && down) {
         /*CHECAR SE HÁ OUTRA BOCHA ABAIXO DE ONDE CAIU A BOCHA LANÇADA*/
         if(cancha[row + 1][col] == 'A' || cancha[row + 1][col] == 'B') {
             /*HÁ UMA BOCHA ABAIXO DE ONDE CAIU A BOCHA LANÇADA*/
@@ -383,8 +379,8 @@ void colisao_tangente(int row, int col) {
     /*---------------------------------------------*/
 
     /*ACIMA-ESQUERDA*/
-    /*CHECAR LIMITE ACIMA-ESQUERDA DE ONDE CAIU A BOCHA LANÇADA*/
-    if(row >= 2 && col >= 2) {
+    /*CHECAR LIMITE ACIMA-ESQUERDA DE ONDE CAIU A BOCHA LANÇADA E SE LEFT UP ESTÁ ATIVADO*/
+    if(row >= 2 && col >= 2 && left_up) {
         /*CHECAR SE HÁ ALGUMA BOCHA ACIMA E À ESQUERDA*/
         if(cancha[row - 1][col - 1] == 'A' || cancha[row - 1][col - 1] == 'B' ) {
             /*HÁ UMA BOCHA ACIMA E À ESQUERDA*/
@@ -400,8 +396,8 @@ void colisao_tangente(int row, int col) {
 
 
     /*ACIMA-DIREITA*/
-    /*CHECAR LIMITE ACIMA-DIREITA DE ONDE CAIU A BOCHA LANÇADA*/
-    if(row >= 2 && col < TAMANHO - 2) {
+    /*CHECAR LIMITE ACIMA-DIREITA DE ONDE CAIU A BOCHA LANÇADA E SE RIGHT UP ESTÁ ATIVADO*/
+    if(row >= 2 && col < TAMANHO - 2 && right_up) {
         /*CHECAR SE HÁ UMA BOCHA ACIMA E À DIREITA*/
         if(cancha[row - 1][col + 1] == 'A' || cancha[row - 1][col + 1] == 'B') {
             /*HÁ UMA BOCHA ACIMA E À DIREITA*/
@@ -416,8 +412,8 @@ void colisao_tangente(int row, int col) {
     /*--------------------------------------------------*/
 
     /*ABAIXO-ESQUERDA*/
-    /*CHECAR LIMITE ABAIXO-ESQUERDA DE ONDE CAIU A BOCHA LANÇADA*/
-    if(row < TAMANHO - 2 && col >=2) {
+    /*CHECAR LIMITE ABAIXO-ESQUERDA DE ONDE CAIU A BOCHA LANÇADA E SE LEFT DOWN ESTÁ ATIVADA*/
+    if(row < TAMANHO - 2 && col >=2 && left_down) {
         /*CHECAR SE HÁ BOCHA ABAIXO E À ESQUERDA*/
         if(cancha[row + 1][col - 1] == 'A' || cancha[row + 1][col - 1] == 'B') {
             /*HÁ BOCHA ABAIXO E À ESQUERDA*/
@@ -433,8 +429,8 @@ void colisao_tangente(int row, int col) {
 
 
     /*ABAIXO-DIREITA*/
-    /*CHECAR LIMITE ABAIXO-DIREITA DE ONDE CAIU A BOCHA LANÇADA*/
-    if(row < TAMANHO - 2 && col < TAMANHO - 2) {
+    /*CHECAR LIMITE ABAIXO-DIREITA DE ONDE CAIU A BOCHA LANÇADA E SE RIGHT DOWN ESTÁ ATIVADO*/
+    if(row < TAMANHO - 2 && col < TAMANHO - 2 && right_down) {
         /*CHECAR SE HÁ BOCHA ABAIXO E À DIREITA*/
         if(cancha[row + 1][col + 1] == 'A' || cancha[row + 1][col + 1] == 'B') {
             /*HÁ BOCHA ABAIXO E À DIREITA*/
@@ -515,39 +511,64 @@ void colisao_direta(int row, int col, char jogador) {
             }
             /*SEGUNDA E TERCEIRA CASAS OCUPADAS*/
             else if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] != vazio) && (cancha[row - 3][col] != vazio) ) {
-                cancha[row - 1][col] = cancha[row][col];
-                cancha[row][col] = jogador;
+                /*SE TIVER ESPAÇO NA QUARTA CASA*/
+                if(row >= 4 && cancha[row - 4][col] == vazio) {
+                    cancha[row - 4][col] = cancha[row - 3][col];
+                    cancha[row - 3][col] = cancha[row - 2][col];
+                    cancha[row - 2][col] = cancha[row][col];
+                    cancha[row][col] = jogador; /*OK*/
+                }else {
+                    cancha[row - 1][col] = cancha[row][col];
+                    cancha[row][col] = jogador; /*OK*/
+                }
+
             }
             /*TODAS AS CASAS ACIMA OCUPADAS*/
             else {
-                /*SE HOUVER ESPAÇO UMA CASA ABAIXO*/
-                if(row < TAMANHO - 1) {
+                /*SE HOUVER ESPAÇO NA QUARTA CASA*/
+                if(row >= 4 && cancha[row - 4][col] == vazio) {
+                    cancha[row - 4][col] = cancha[row - 3][col];
+                    cancha[row - 3][col] = cancha[row - 2][col];
+                    cancha[row - 2][col] = cancha[row - 1][col];
+                    cancha[row - 1][col] = cancha[row][col];
+                    cancha[row][col] = jogador;/*OK*/
+                }else {
+                    if(row < TAMANHO - 1) {
+                    /*CHECAR SE TEM ESPAÇO EMBAIXO*/
                     /*SE O ESPAÇO ESTIVER VAZIO*/
-                    if(cancha[row + 1][col] == vazio) {
-                        cancha[row + 1][col] = jogador;
+                        if(cancha[row + 1][col] == vazio) {
+                            /*EMBAIXO*/
+                            cancha[row + 1][col] = jogador; /*OK*/
                     }else {
                         /*CHECAR DIAGONAIS INFERIORES*/
                         if(cancha[row + 1][col - 1] == vazio && col > 0) {
-                           cancha[row + 1][col - 1] = jogador;
+                           /*DIAGONAL INFERIOR ESQUERDA*/
+                           cancha[row + 1][col - 1] = jogador; /*OK*/
                         }else if(cancha[row + 1][col + 1] == vazio && col < TAMANHO - 1) {
-                            cancha[row + 1][col + 1] = jogador;
+                            /*DIAGONAL INFERIOR DIREITA*/
+                            cancha[row + 1][col + 1] = jogador; /*OK*/
                         }else {
                             /*CHECAR OS LADOS*/
                             if(cancha[row][col - 1] == vazio && col > 0) {
-                                cancha[row][col - 1] = jogador;
+                                /*ESQUERDA*/
+                                cancha[row][col - 1] = jogador; /*OK*/
                             }else if(cancha[row][col + 1] == vazio && col < TAMANHO - 1) {
-                                cancha[row][col + 1] = jogador;
+                                /*DIREITA*/
+                                cancha[row][col + 1] = jogador; /*OK*/
                             }else if(cancha[row][col - 1] == vazio && col > 0) {
                                 cancha[row][col - 1] = jogador;
                             }else {
                                 /*CHECAR DIAGONAIS SUPERIORES*/
                                 if(cancha[row - 1][col - 1] == vazio && col > 0) {
-                                    cancha[row - 1][col - 1] = jogador;
+                                    /*DIAGONAL SUPERIOR ESQUERDA*/
+                                    cancha[row - 1][col - 1] = jogador; /*OK*/
                                 }else if(cancha[row - 1][col + 1] == vazio && col < TAMANHO - 1) {
-                                    cancha[row - 1][col + 1] = jogador;
+                                    /*DIAGONAL SUPERIOR DIREITA*/
+                                    cancha[row - 1][col + 1] = jogador;/*OK*/
                                 }else {
                                     /*CHECAR ALGUMAS CASAS ALEATÓRIAS*/
                                     if(cancha[row][col - 2] == vazio && col >= 2) {
+                                        /*DUAS CASAS A ESQUERDA*/
                                         cancha[row][col - 2] = jogador;
                                     }else if(cancha[row - 1][col - 2] == vazio && col >= 2) {
                                         cancha[row - 1][col - 2] = jogador;
@@ -574,6 +595,7 @@ void colisao_direta(int row, int col, char jogador) {
                             cancha[row - 1][col + 1]= jogador;
                         }
                     }
+                }
                 }
             }
         }
@@ -620,50 +642,6 @@ int calcula_pontos(char jogador) {
 
 }
 
-void movimentar_colisao_direta(char bocha, int start_row, int end_row, int col) {
-    int i;
-    char temp = cancha[start_row][col]; /*GUARDA O OBJETO QUE ESTAVA NO LOCAL ATINGIDO*/
-    cancha[start_row][col] = bocha; /*OBJETO QUE FOI LANÇADO AGORA OCUPA A POSIÇÃO*/
-    for(i = start_row - 1; i >= end_row; i--) { /*Começa da última linha e vai subindo até a linha escolhida*/
-        system("cls");
-        mostra_cancha();
-        Sleep(300);
-        /*testar se está vazio*/
-        if(cancha[i][col] == vazio) {
-            cancha[i][col] = temp;
-        }else {
-            cancha[i - 1][col] = cancha[i][col];
-            cancha[i][col] = temp;
-        }
-        if(start_row - i >= 2) {
-            cancha[i + 1][col] = vazio;
-        }
-    }
-    mostra_cancha();
-}
 
-void vai_dois_volta_um(char bocha, int start_row, int end_row, int col) {
-    int i;
-    char temp = cancha[start_row][col];
-    cancha[start_row][col] = bocha;
-    for(i = start_row - 1; i >= end_row; i--) {
-        system("cls");
-        mostra_cancha();
-        Sleep(300);
-        if(cancha[i][col] == vazio) {
-            cancha[i][col] = temp;
-        }
-        if(start_row - i >= 2) {
-            cancha[i + 1][col] = vazio;
-        }
-    }
-    system("cls");
-    mostra_cancha();
-    Sleep(300);
-    cancha[i + 2][col] = temp;
-    cancha[i + 1][col] = vazio;
-    system("cls");
-    mostra_cancha();
-}
 
 
