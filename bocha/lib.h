@@ -289,7 +289,7 @@ void lanca_bocha(char jogador, int row, int col) {
     /*SE CAIR EM LUGAR VAZIO*/
     if(cancha[row][col] == vazio) {
         cancha[row][col] = jogador;
-        colisao_tangente(row_original, col_original, 1, 1, 1, 1, 1, 1, 1, 1);
+       /*colisao_tangente(row_original, col_original, 1, 1, 1, 1, 1, 1, 1, 1);*/
 
 
     } else {
@@ -458,6 +458,11 @@ void colisao_direta(int row, int col, char jogador) {
         if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] == vazio) && (cancha[row - 3][col] == vazio) ) {
             cancha[row - 3][col] = cancha[row][col];
             cancha[row][col] = jogador;   /*OK*/
+            /*CHAMA COLISAO TANGENTE*/
+            /*NÃO PRECISA CHECAR ACIMA*/
+            colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1);/*OK*/
+            /*---------------TUDO CERTO ATÉ AQUI-----------------------*/
+
         }else {
             /*UMA OU MAIS CASAS OCUPADAS*/
 
@@ -466,12 +471,18 @@ void colisao_direta(int row, int col, char jogador) {
                 cancha[row - 3][col] = cancha[row - 1][col];
                 cancha[row - 1][col] = cancha[row][col];
                 cancha[row][col] = jogador; /*OK*/
+                /*CHAMA COLISAO TANGENTE, NÃO CHECAR ACIMA*/
+                colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1); /*OK*/
+                /*------------------TUDO CERTO--------------*/
             }
             /*SEGUNDA CASA OCUPADA*/
             else if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] != vazio) && (cancha[row - 3][col] == vazio) ) {
                 cancha[row - 3][col] = cancha[row - 2][col];
                 cancha[row - 2][col] = cancha[row][col];
                 cancha[row][col] = jogador; /*OK*/
+                /*CHAMA COLISAO TANGENTE, NÃO CHECAR ACIMA*/
+                colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1); /*OK*/
+                /*----------------TUDO CERTO--------------------------*/
             }
             /*TERCEIRA CASA OCUPADA*/
             else if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] == vazio) && (cancha[row - 3][col] != vazio) ) {
@@ -484,7 +495,10 @@ void colisao_direta(int row, int col, char jogador) {
                     /*SENÃO MOVE SÓ DUAS VEZES E PÁRA*/
                     cancha[row - 2][col] = cancha[row][col];
                     cancha[row][col] = jogador; /*OK*/
+                    /*----------------TUDO CERTO----------------*/
                 }
+                /*CHAMA COLISAO TANGENTE, NÃO CHECAR ACIMA*/
+                colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1); /*OK*/
 
             }
             /*PRIMEIRA E SEGUNDA CASAS OCUPADAS*/
@@ -493,6 +507,8 @@ void colisao_direta(int row, int col, char jogador) {
                 cancha[row - 2][col] = cancha[row - 1][col];
                 cancha[row - 1][col] = cancha[row][col];
                 cancha[row][col] = jogador; /*OK*/
+                /*CHAMA COLISAO TANGENTE, NÃO CHECAR ACIMA*/
+                colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1); /*OK*/
             }
             /*PRIMEIRA E TERCEIRA CASAS OCUPADAS*/
             else if( (cancha[row - 1][col] != vazio) && (cancha[row - 2][col] == vazio) && (cancha[row - 3][col] != vazio) ) {
@@ -507,6 +523,8 @@ void colisao_direta(int row, int col, char jogador) {
                     cancha[row - 1][col] = cancha[row][col];
                     cancha[row][col] = jogador; /*OK*/
                 }
+                /*CHAMA COLISAO TANGENTE, NÃO CHECAR ACIMA*/
+                colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1); /*OK*/
 
             }
             /*SEGUNDA E TERCEIRA CASAS OCUPADAS*/
@@ -520,7 +538,10 @@ void colisao_direta(int row, int col, char jogador) {
                 }else {
                     cancha[row - 1][col] = cancha[row][col];
                     cancha[row][col] = jogador; /*OK*/
+
                 }
+                /*CHAMA COLISAO TANGENTE, NÃO CHECAR ACIMA*/
+                colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1); /*OK*/
 
             }
             /*TODAS AS CASAS ACIMA OCUPADAS*/
@@ -532,6 +553,8 @@ void colisao_direta(int row, int col, char jogador) {
                     cancha[row - 2][col] = cancha[row - 1][col];
                     cancha[row - 1][col] = cancha[row][col];
                     cancha[row][col] = jogador;/*OK*/
+                    /*CHAMA COLISAO TANGENTE, NÃO CHECAR ACIMA*/
+                    colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1); /*OK*/
                 }else {
                     if(row < TAMANHO - 1) {
                     /*CHECAR SE TEM ESPAÇO EMBAIXO*/
