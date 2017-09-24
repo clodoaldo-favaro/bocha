@@ -500,9 +500,18 @@ void colisao_direta(int row, int col, char jogador) {
             }
             /*PRIMEIRA E TERCEIRA CASAS OCUPADAS*/
             else if( (cancha[row - 1][col] != vazio) && (cancha[row - 2][col] == vazio) && (cancha[row - 3][col] != vazio) ) {
-                cancha[row - 2][col] = cancha[row - 1][col];
-                cancha[row - 1][col] = cancha[row][col];
-                cancha[row][col] = jogador;
+                /*SE TIVER ESPAÇO NA QUARTA CASA*/
+                if(row >= 4 && cancha[row - 4][col] == vazio) {
+                    cancha[row - 4][col] = cancha[row - 3][col];
+                    cancha[row - 3][col] = cancha[row - 1][col];
+                    cancha[row - 1][col] = cancha[row][col];
+                    cancha[row][col] = jogador; /*OK*/
+                }else {
+                    cancha[row - 2][col] = cancha[row - 1][col];
+                    cancha[row - 1][col] = cancha[row][col];
+                    cancha[row][col] = jogador; /*OK*/
+                }
+
             }
             /*SEGUNDA E TERCEIRA CASAS OCUPADAS*/
             else if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] != vazio) && (cancha[row - 3][col] != vazio) ) {
