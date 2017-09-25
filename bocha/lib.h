@@ -451,7 +451,7 @@ void colisao_tangente(int row, int col, int up, int down, int left, int right, i
 
 
 void colisao_direta(int row, int col, char jogador) {
-
+    int i , j;
    /*PRIMEIRO TESTE: VERIFICAR SE O LOCAL DE COLISÃO ESTÁ NA LINHA 3 OU MAIOR(MAIS PARA BAIXO NA MATRIZ) */
    if(row >= 3) {
         /*3 CASAS ACIMA VAZIAS*/
@@ -486,11 +486,39 @@ void colisao_direta(int row, int col, char jogador) {
             }
             /*TERCEIRA CASA OCUPADA*/
             else if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] == vazio) && (cancha[row - 3][col] != vazio) ) {
-                /*SE TIVER ESPAÇO VAZIO ACIMA DA TERCEIRA CASA*/
-                if(cancha[row - 4][col] == vazio && row > 3) {
-                    cancha[row - 4][col] = cancha[row - 3][col];
-                    cancha[row - 3][col] = cancha[row][col];
-                    cancha[row][col] = jogador; /*OK*/
+                /*TESTAR SE TEM 4 OU MAIS CASAS ACIMA*/
+                if(row > 3) {
+                    /*ENCONTRAR ESPAÇO VAZIO*/
+                    /*COMEÇANDO A PARTIR DE UM ESPAÇO ACIMA DE ROW - 3, OU SEJA, ROW - 4*/
+                    /*ELE PERCORRE ATÉ ACHAR UM ESPAÇO VAZIO, OU ATÉ i ser igual a 0*/
+                    i = row - 4;
+                    while(cancha[i][col] != vazio && i >= 0) {
+                        /*NÃO ENCONTROU VAZIO E i NÃO PASSOU DA BORDA DA CANCHA*/
+                        i--;
+                    }
+                    /*SE i FOR MENOR QUE ZERO, SIGNIFICA QUE PERCORREU PASSOU DA CANCHA SEM ENCONTRAR ESPAÇO VAZIO*/
+                    /*ENTÃO, A BOCHA ATINGIDA EM cancha[row][col] SÓ VAI SE MOVIMENTAR DUAS VEZES, POIS NÃO TEM COMO EMPURRAR O QUE ESTÁ ACIMA*/
+                    if(i < 0) {
+                        /*MOVE SÓ DUAS VEZES*/
+                        cancha[row - 2][col] = cancha[row][col];
+                        cancha[row][col] = jogador;
+                    }else {
+                        /*EMPURRA ATÉ O PRIMEIRA ESPAÇO VAZIO QUE ACHOU*/
+
+                        /*COMEÇANDO POR j = i, OU SEJA, DO ESPAÇO VAZIO*/
+                        /*VAI ATÉ O ROW - 4 QUE SERÁ OCUPADO PELO ROW - 3*/
+                        for(j = i; j <= row - 4; j++) {
+                            /*PRIMEIRA ITERAÇÃO, CANCHA[J][COL] É O ESPAÇO VAZIO*/
+                            /*LINHA ATUAL RECEBE A LINHA DE BAIXO*/
+                            cancha[j][col] = cancha[j + 1][col];
+                        }
+                        /*TERMINANDO ISSO, AGORA PODEMOS COLOCAR CANCHA[ROW][COL] EM CANCHA[ROW - 3][COL]*/
+                        cancha[row - 3][col] = cancha[row][col];
+                        cancha[row][col] = jogador;
+                    }
+                    /*CHAMA COLISAO TANGENTE, NÃO CHECAR ACIMA*/
+                    colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1); /*OK*/
+                    /*----------TUDO OK------------*/
                 }else {
                     /*SENÃO MOVE SÓ DUAS VEZES E PÁRA*/
                     cancha[row - 2][col] = cancha[row][col];
@@ -499,6 +527,7 @@ void colisao_direta(int row, int col, char jogador) {
                 }
                 /*CHAMA COLISAO TANGENTE, NÃO CHECAR ACIMA*/
                 colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1); /*OK*/
+                /*-----------TUDO CERTO---------------*/
 
             }
             /*PRIMEIRA E SEGUNDA CASAS OCUPADAS*/
@@ -509,32 +538,60 @@ void colisao_direta(int row, int col, char jogador) {
                 cancha[row][col] = jogador; /*OK*/
                 /*CHAMA COLISAO TANGENTE, NÃO CHECAR ACIMA*/
                 colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1); /*OK*/
+                /*---------------------TUDO CERTO-----------------*/
             }
             /*PRIMEIRA E TERCEIRA CASAS OCUPADAS*/
             else if( (cancha[row - 1][col] != vazio) && (cancha[row - 2][col] == vazio) && (cancha[row - 3][col] != vazio) ) {
-                /*SE TIVER ESPAÇO NA QUARTA CASA*/
-                if(row >= 4 && cancha[row - 4][col] == vazio) {
-                    cancha[row - 4][col] = cancha[row - 3][col];
-                    cancha[row - 3][col] = cancha[row - 1][col];
-                    cancha[row - 1][col] = cancha[row][col];
-                    cancha[row][col] = jogador; /*OK*/
+                /*SE TIVER ESPAÇO PARA MOVER PRA CIMA*/
+                if(row > 3) {
+                    i = row - 4;
+                    /*PROCURA ESPAÇO VAZIO*/
+                    while(cancha[i][col] != vazio && i >= 0) {
+                        i--;
+                    }
+                    if(i < 0) {
+                        /*NÃO ENCONTROU ESPAÇO VAZIO*/
+                        cancha[row - 2][col] = cancha[row - 1][col];
+                        cancha[row - 1][col] = cancha[row][col];
+                        cancha[row][col] = jogador;
+                    }else {
+                        for(j = i; j <= row - 4; j++) {
+                            cancha[j][col] = cancha[j + 1][col];
+                        }
+                        cancha[row - 3][col] = cancha[row - 1][col];
+                        cancha[row - 1][col] = cancha[row][col];
+                        cancha[row][col] = jogador;
+                    }
                 }else {
+                    /*CANCHA[ROW][COL] SOBE 1, E CANCHA[ROW - 1][COL] SOBE 1*/
                     cancha[row - 2][col] = cancha[row - 1][col];
                     cancha[row - 1][col] = cancha[row][col];
                     cancha[row][col] = jogador; /*OK*/
                 }
                 /*CHAMA COLISAO TANGENTE, NÃO CHECAR ACIMA*/
                 colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1); /*OK*/
+                /*-----------TUDO CERTO-----------------*/
 
             }
             /*SEGUNDA E TERCEIRA CASAS OCUPADAS*/
             else if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] != vazio) && (cancha[row - 3][col] != vazio) ) {
                 /*SE TIVER ESPAÇO NA QUARTA CASA*/
-                if(row >= 4 && cancha[row - 4][col] == vazio) {
-                    cancha[row - 4][col] = cancha[row - 3][col];
-                    cancha[row - 3][col] = cancha[row - 2][col];
-                    cancha[row - 2][col] = cancha[row][col];
-                    cancha[row][col] = jogador; /*OK*/
+                if(row > 3) {
+                    i = row - 4;
+                    /*PROCURA ESPAÇO VAZIO*/
+                    while(cancha[i][col] != vazio && i >= 0) {
+                        i--;
+                    }
+                    if(i < 0) {
+                        cancha[row - 1][col] = cancha[row][col];
+                        cancha[row][col] = jogador;
+                    }else {
+                        for(j = i; j <= row - 3; j++) {
+                            cancha[j][col] = cancha[j + 1][col];
+                        }
+                        cancha[row - 2][col] = cancha[row][col];
+                        cancha[row][col] = jogador;
+                    }
                 }else {
                     cancha[row - 1][col] = cancha[row][col];
                     cancha[row][col] = jogador; /*OK*/
