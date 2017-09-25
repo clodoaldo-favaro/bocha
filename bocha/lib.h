@@ -614,22 +614,34 @@ void colisao_direta(int row, int col, char jogador) {
                     if(i < 0) {
                         /*NÃO TEM COMO EMPURRAR PARA CIMA, JOGADOR VAI IR PARA BAIXO E EMPURRAR PARA BAIXO*/
                         /*PROCURAR ESPAÇO VAZIO EMBAIXO*/
-                        i = row + 1;
-
-                        while(cancha[i][col] != vazio && i <= TAMANHO - 1) {
-                            i++;
-                        }
-
-
-                            for(j = row + i; j >= row; j--) {
-
+                        if(cancha[row + 1][col] == vazio && cancha[row + 2][col] == vazio && cancha[row + 3][col] == vazio ) {
+                            cancha[row + 3][col] = jogador;
+                            colisao_tangente(row + 3, col, 0, 1, 1, 1, 1, 1, 1, 1);
+                        }else if(cancha[row + 1][col] == vazio && cancha[row + 2][col] == vazio && cancha[row + 3][col] != vazio) {
+                            if(cancha[row + 4][col] == vazio) {
+                                cancha[row + 4][col] = cancha[row + 3][col];
+                                cancha[row + 3][col] = jogador;
+                                colisao_tangente(row + 3, col, 0, 0, 1, 1, 1, 1, 1, 1);
+                            }else {
+                                cancha[row + 2][col] = jogador;
+                                colisao_tangente(row + 2, col, 0, 0, 1, 1, 1, 1, 1, 1);
                             }
-
+                        }else if(cancha[row + 1][col] == vazio && cancha[row + 2][col] != vazio && cancha[row + 3][col] == vazio) {
+                            cancha[row + 3][col] = cancha[row + 2][col];
+                            cancha[row + 2][col] = jogador;
+                            colisao_tangente(row + 2, col, 0, 0, 1, 1, 1, 1, 1, 1);
+                        }else if(cancha[row + 1][col] != vazio && cancha[row + 2][col] == vazio && cancha[row + 3][col] == vazio) {
+                            cancha[row + 3][col] = cancha[row + 1][col];
+                            cancha[row + 1][col] = jogador;
+                            colisao_tangente(row, col, 0, 0, 1, 1, 1, 1, 1, 1);
+                        }
                     }else {
+                        /*EMPURRA PRA CIMA*/
                         for(j = i; j <= row - 2; j++) {
                             cancha[j][col] = cancha[j + 1][col];
                         }
                         cancha[row][col] = jogador;
+                        colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1);
                     }
                 }else {
                     if(row < TAMANHO - 1) {
