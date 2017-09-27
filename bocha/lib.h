@@ -618,7 +618,31 @@ void colisao_direta(int row, int col, char jogador) {
             }
         }
    }else if(row == 2) {
-
+        if(cancha[row - 1][col] == vazio && cancha[row - 2][col] == vazio) { //DOIS ESPAÇOS ACIMA VAZIOS
+            cancha[row - 1][col] = cancha[row][col];
+            cancha[row][col] = jogador;
+            colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1);
+        }else if(cancha[row - 1][col] != vazio && cancha[row - 2][col] == vazio) { //1 ACIMA OCUPADO, 2 ACIMA VAZIO
+            cancha[row - 2][col] = cancha[row - 1][col];
+            cancha[row - 1][col] = cancha[row][col];
+            cancha[row][col] = jogador;
+            colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1);
+        }else if(cancha[row - 1][col] == vazio && cancha[row - 2] != vazio) {
+            cancha[row - 1][col] = cancha[row][col];
+            cancha[row][col];
+            colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1);
+        }else {
+            //DUAS CASAS OCUPADAS, PROCURAR ABAIXO
+            i = row + 1; //COMEÇA A PROCURAR A PARTIR DE UMA CASA ABAIXO, PARA AO ACHAR VAZIO
+            while(cancha[i][col] != vazio && i < TAMANHO) {
+                i++;
+            }
+            for(j = i; j >= row + 2; j--) {
+                cancha[j][col] = cancha[j - 1][col]; //MOVE PARA BAIXO
+            }
+            cancha[row + 1][col] = jogador;
+            colisao_tangente(row + 1, col, 0, 0, 1, 1, 1, 1, 1, 1);
+        }
    }else if(row == 1) {
 
    }else if(row == 0) {
