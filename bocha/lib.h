@@ -592,20 +592,20 @@ void colisao_direta(int row, int col, char jogador) {
                         i--;
                     }
                     if(i < 0) {
-                        //NÃO LOCALIZOU ESPAÇO VAZIO ACIMA, BOCHA LANÇADA VAI VOLTAR 1, POIS NÃO TEM COMO OCUPAR O ESPAÇO DA OUTRA
-                        if(cancha[row + 1][col] == vazio) {
-                            cancha[row + 1][col] = jogador;
-                            colisao_tangente(row + 1, col, 0, 1, 1, 1, 1, 1, 1, 1);
-                        }else if(cancha[row + 2][col] == vazio) {
-                            cancha[row + 2][col] = cancha[row + 1][col];
-                            cancha[row + 1][col] = jogador;
-                            colisao_tangente(row + 1, col, 0, 1, 1, 1, 1, 1, 1, 1);
-                        }else {
-                            cancha[row + 3][col] = cancha[row + 2][col];
-                            cancha[row + 2][col] = cancha[row + 1][col];
-                            cancha[row + 1][col] = jogador;
-                            colisao_tangente(row + 1, col, 0, 0, 1, 1, 1, 1, 1, 1);
+                        //NÃO LOCALIZOU ESPAÇO VAZIO ACIMA, PROCURAR ESPACO ABAIXO
+                        i = row + 1;
+                        while(cancha[i][col] != vazio && i < TAMANHO) {
+                            i++;
                         }
+                        //PELO TAMANHO DA CANCHA E O NÚMERO MÁXIMO DE BOCHAS POSSÍVEIS, SE NÃO TIVER ESPAÇO EM CIMA COM CERTEZA TERÁ EMBAIXO.
+                        //LEMBRANDO: TEMOS 10 LINHAS , 8 BOCHAS, 1 BOLIM, ENTÃO TEREMOS NO MÁXIMO 9 POSIÇÕES OCUPADAS EM UMA ÚNICA COLUNA
+                        //O QUE NOS GARANTE PELO MENOS 1 ESPAÇO LIVRE EM QUALQUER SITUAÇÃO
+                        for(j = i; j >= row + 2; j--) {
+                            cancha[j][col] = cancha[j - 1][col];
+                        }
+                        cancha[row + 1][col] = jogador;
+
+
                     }else {
                         /*EMPURRA PRA CIMA*/
                         for(j = i; j <= row - 2; j++) {
@@ -627,9 +627,9 @@ void colisao_direta(int row, int col, char jogador) {
             cancha[row - 1][col] = cancha[row][col];
             cancha[row][col] = jogador;
             colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1);
-        }else if(cancha[row - 1][col] == vazio && cancha[row - 2] != vazio) {
+        }else if(cancha[row - 1][col] == vazio && cancha[row - 2][col] != vazio) {
             cancha[row - 1][col] = cancha[row][col];
-            cancha[row][col];
+            cancha[row][col] = jogador;
             colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1);
         }else {
             //DUAS CASAS OCUPADAS, PROCURAR ABAIXO
