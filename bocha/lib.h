@@ -16,6 +16,7 @@ void lanca_bocha(char jogador, int row, int col);
 int calcula_pontos(char jogador);
 void colisao_tangente(int row, int col, int up, int down, int left, int right, int left_up, int right_up, int left_down, int right_down);
 void colisao_direta(int row, int col, char jogador);
+void empurra_baixo(int row, int col, char jogador);
 
 /*DECLARA A CANCHA GLOBAL*/
 char cancha[TAMANHO][TAMANHO];
@@ -510,7 +511,6 @@ void colisao_direta(int row, int col, char jogador) {
                 /*CHAMA COLISAO TANGENTE, NÃO CHECAR ACIMA*/
                 colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1); /*OK*/
                 /*-----------TUDO CERTO---------------*/
-
             }
             //PRIMEIRA E SEGUNDA CASAS OCUPADAS
             else if( (cancha[row - 1][col] != vazio) && (cancha[row - 2][col] != vazio) && (cancha[row - 3][col] == vazio) ) {
@@ -553,7 +553,6 @@ void colisao_direta(int row, int col, char jogador) {
                 /*CHAMA COLISAO TANGENTE, NÃO CHECAR ACIMA*/
                 colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1); /*OK*/
                 /*-----------TUDO CERTO-----------------*/
-
             }
             /*SEGUNDA E TERCEIRA CASAS OCUPADAS*/
             else if( (cancha[row - 1][col] == vazio) && (cancha[row - 2][col] != vazio) && (cancha[row - 3][col] != vazio) ) {
@@ -582,7 +581,6 @@ void colisao_direta(int row, int col, char jogador) {
                 /*CHAMA COLISAO TANGENTE, NÃO CHECAR ACIMA*/
                 colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1); /*OK*/
                 /*-----------TUDO CERTO------------------*/
-
             }
             //3 CASAS ACIMAS OCUPADAS, VERICAR SE HÁ 1 ESPAÇO LIVRE ACIMAS DAS 3 PARA IR EMPURRANDO
             else {
@@ -593,19 +591,7 @@ void colisao_direta(int row, int col, char jogador) {
                     }
                     if(i < 0) {
                         //NÃO LOCALIZOU ESPAÇO VAZIO ACIMA, PROCURAR ESPACO ABAIXO
-                        i = row + 1;
-                        while(cancha[i][col] != vazio && i < TAMANHO) {
-                            i++;
-                        }
-                        //PELO TAMANHO DA CANCHA E O NÚMERO MÁXIMO DE BOCHAS POSSÍVEIS, SE NÃO TIVER ESPAÇO EM CIMA COM CERTEZA TERÁ EMBAIXO.
-                        //LEMBRANDO: TEMOS 10 LINHAS , 8 BOCHAS, 1 BOLIM, ENTÃO TEREMOS NO MÁXIMO 9 POSIÇÕES OCUPADAS EM UMA ÚNICA COLUNA
-                        //O QUE NOS GARANTE PELO MENOS 1 ESPAÇO LIVRE EM QUALQUER SITUAÇÃO
-                        for(j = i; j >= row + 2; j--) {
-                            cancha[j][col] = cancha[j - 1][col];
-                        }
-                        cancha[row + 1][col] = jogador;
-
-
+                        empurra_baixo(row, col, jogador);
                     }else {
                         /*EMPURRA PRA CIMA*/
                         for(j = i; j <= row - 2; j++) {
@@ -614,7 +600,6 @@ void colisao_direta(int row, int col, char jogador) {
                         cancha[row][col] = jogador;
                         colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1);
                     }
-
             }
         }
    }else if(row == 2) {
@@ -633,20 +618,19 @@ void colisao_direta(int row, int col, char jogador) {
             colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1);
         }else {
             //DUAS CASAS OCUPADAS, PROCURAR ABAIXO
-            i = row + 1; //COMEÇA A PROCURAR A PARTIR DE UMA CASA ABAIXO, PARA AO ACHAR VAZIO
-            while(cancha[i][col] != vazio && i < TAMANHO) {
-                i++;
-            }
-            for(j = i; j >= row + 2; j--) {
-                cancha[j][col] = cancha[j - 1][col]; //MOVE PARA BAIXO
-            }
-            cancha[row + 1][col] = jogador;
-            colisao_tangente(row + 1, col, 0, 0, 1, 1, 1, 1, 1, 1);
+            empurra_baixo(row, col, jogador);
         }
    }else if(row == 1) {
-
+       if(cancha[row - 1][col] == vazio) {
+            cancha[row - 1][col] = cancha[row][col];
+            cancha[row][col] = jogador;
+            colisao_tangente(row, col, 0, 1, 1, 1, 1, 1, 1, 1);
+       }else {
+            //NÃO TEM ESPAÇO EM CIMA, PROCURAR EMBAIXO
+            empurra_baixo(row, col, jogador);
+       }
    }else if(row == 0) {
-
+       empurra_baixo(row, col, jogador);
    }
 }
 
@@ -681,6 +665,20 @@ int calcula_pontos(char jogador) {
     }
     return pontuacao;
 
+
+}
+
+void empurra_baixo(int row, int col, char jogador) {
+    int i, j;
+    i = row + 1; //COMEÇA A PROCURAR A PARTIR DE UMA CASA ABAIXO, PARA AO ACHAR VAZIO
+    while(cancha[i][col] != vazio && i < TAMANHO) {
+        i++;
+    }
+    for(j = i; j >= row + 2; j--) {
+        cancha[j][col] = cancha[j - 1][col]; //MOVE PARA BAIXO
+    }
+    cancha[row + 1][col] = jogador;
+    colisao_tangente(row + 1, col, 0, 0, 1, 1, 1, 1, 1, 1);
 
 }
 
