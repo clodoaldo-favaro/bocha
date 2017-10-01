@@ -17,12 +17,14 @@ int calcula_pontos(char jogador);
 void colisao_tangente(int row, int col, int up, int down, int left, int right, int left_up, int right_up, int left_down, int right_down);
 void colisao_direta(int row, int col, char jogador);
 void empurra_baixo(int row, int col, char jogador);
+void mostrar_estatisticas();
+void atualizar_estatisticas(int resultado);
 
 /*DECLARA A CANCHA GLOBAL*/
 char cancha[TAMANHO][TAMANHO];
 char alfabeto[TAMANHO];
 char vazio = '-';
-int row_original, col_original;
+
 
 
 void start_screen() {
@@ -37,7 +39,8 @@ void start_screen() {
     printf("%25c****************************\n", ' ');
     printf("\n\n");
     printf("%32c1. NOVO JOGO\n",' ');
-    printf("%32c2. SAIR\n",' ');
+    printf("%32c2. ESTATÍSTICAS\n",' ');
+    printf("%32c3. SAIR\n",' ');
 }
 
 void start_game()  {
@@ -127,9 +130,9 @@ void inicializa_cancha() {
 
 /***********************CHAMA VÁRIAS OUTRAS, PODE-SE DIZER QUE É A PRINCIPAL*****************************************/
 void partida() {
-    //TODO
-    int duracao = 8, jogadas = 0;
+    int duracao = 8, jogadas = 0, resultado;
     int pontos_A = 0, pontos_B = 0, jogadas_A = 0, jogadas_B = 0;
+    int row, col;
     char *alvo; /*É UM PONTEIRO, OU SEJA: RECEBE ENDEREÇO PARA UMA VARIÁVEL DE TIPO CHAR*/
 
 
@@ -146,17 +149,17 @@ void partida() {
 
         alvo = jogada(jogador_atual); /*RECEBE UM ENDEREÇO*/
 
-        col_original = alvo[0] - 65;/*COLUNA: CONVERTE LETRA PARA NUMERO INT A = 0, B = 1*/
+        col = alvo[0] - 65;/*COLUNA: CONVERTE LETRA PARA NUMERO INT A = 0, B = 1*/
         if(strlen(alvo) == 3) {
-            row_original = 0 + (alvo[2] - '0'); /*JA VALIDOU E DEU 10*/
+            row = 0 + (alvo[2] - '0'); /*JA VALIDOU E DEU 10*/
 
         }else {
-            row_original = TAMANHO - (alvo[1] - '0'); /*LINHA: CONVERTE CARACTERE DIGITO PARA INT '1' = 1*/
+            row = TAMANHO - (alvo[1] - '0'); /*LINHA: CONVERTE CARACTERE DIGITO PARA INT '1' = 1*/
 
         }
 
         printf("O jogador acertou no %s\n", alvo);
-        lanca_bocha(jogador_atual, row_original, col_original);
+        lanca_bocha(jogador_atual, row, col);
         system("pause");
         mostra_cancha();
         pontos_A = calcula_pontos('A');
@@ -170,15 +173,19 @@ void partida() {
     /*Fim do jogo, mostra vencedor*/
     if(pontos_A > pontos_B) {
         printf("Vencedor: equipe A!\n");
+        resultado = 1;
     }else if(pontos_A < pontos_B) {
         printf("Vencedor: equipe B!\n");
+        resultado = 2;
     }else {
         printf("Empate!\n");
+        resultado = 3;
     }
+    atualizar_estatisticas(resultado);
 
 
 }
-/************************************************************************************************************************/
+
 
 char *jogada(char jogador) {
 
@@ -264,9 +271,9 @@ int valida_jogada(char jogada[4]) {
 }
 
 int calcula_erro(int linha_col) {
-    /*TESTE TESTE TESTE*/
-    return 0;
-    /*TESTE TESTE TESTE*/
+
+
+
     /*linha_col == 1, erro de linha*/
     /*linha_col == 2, erro de coluna*/
     int erro_linha[] = {-2, -1, 0, 1, 2};
@@ -282,13 +289,13 @@ int calcula_erro(int linha_col) {
 }
 
 
-/*VAI RECEBER O row_original e o col_original, que é onde a bocha atingiu*/
+
 void lanca_bocha(char jogador, int row, int col) {
 
     //CAIU EM LUGAR VAZIO
     if(cancha[row][col] == vazio) {
         cancha[row][col] = jogador;
-       /*colisao_tangente(row_original, col_original, 1, 1, 1, 1, 1, 1, 1, 1);*/
+       colisao_tangente(row, col, 1, 1, 1, 1, 1, 1, 1, 1);
     } else {
         //CAIU EM UMA CASA OCUPADA POR OUTRO OBJETO
         colisao_direta(row, col, jogador);
@@ -680,6 +687,89 @@ void empurra_baixo(int row, int col, char jogador) {
     cancha[row + 1][col] = jogador;
     colisao_tangente(row + 1, col, 0, 0, 1, 1, 1, 1, 1, 1);
 
+}
+
+void mostrar_estatisticas() {
+    //ABRE O ARQUIVO PARA LEITURA
+    FILE *stats;
+    int linha = 1;
+    char texto[20];
+    //TESTA SE CONSEGUIU ABRIR
+    if( (stats = fopen("stats.txt", "r")) != NULL)  {
+        system("cls");
+        while(fgets(texto, 19, stats) != NULL) {
+            switch(linha) {
+
+                case 1:
+                    printf("Partidas jogadas: %s\n", texto);
+                    break;
+                case 2:
+                    printf("Vitórias da equipe A: %s\n", texto);
+                    break;
+                case 3:
+                    printf("Vitórias da equipe B: %s\n", texto);
+                    break;
+                case 4:
+                    printf("Empates: %s\n", texto);
+                    break;
+                default:
+                    break;
+            }
+            linha++;
+        }
+    }else {
+        printf("Não foi possível abrir o arquivo\n");
+        system("PAUSE");
+        start_screen();
+    }
+    fclose(stats);
+    system("PAUSE");
+
+
+}
+
+void atualizar_estatisticas(int resultado) {
+    FILE *stats;
+    char partidas[5], vitorias_A[5], vitorias_B[5], empates[5];
+
+    if( (stats = fopen("stats.txt", "r")) != NULL) {
+        fgets(partidas, 6, stats);
+        printf("%s\n", partidas);
+        fgets(vitorias_A, 6, stats);
+        printf("%s\n", vitorias_A);
+        fgets(vitorias_B, 6, stats);
+        printf("%s\n", vitorias_B);
+        fgets(empates, 6, stats);
+        printf("%s\n", empates);
+    }
+    fclose(stats);
+
+    int partidas_int = atoi(partidas);
+    int vit_A_int = atoi(vitorias_A);
+    int vit_B_int = atoi(vitorias_B);
+    int emp_int = atoi(empates);
+    partidas_int++;
+    switch(resultado) {
+        case 1:
+            vit_A_int++;
+            break;
+        case 2:
+            vit_B_int++;
+            break;
+        case 3:
+            emp_int++;
+            break;
+        default:
+            break;
+    }
+
+    if( (stats = fopen("stats.txt", "w")) != NULL) {
+        fprintf(stats, "%d\n", partidas_int);
+        fprintf(stats, "%d\n", vit_A_int);
+        fprintf(stats, "%d\n", vit_B_int);
+        fprintf(stats, "%d\n", emp_int);
+    }
+    fclose(stats);
 }
 
 
