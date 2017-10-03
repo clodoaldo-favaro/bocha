@@ -701,16 +701,16 @@ void mostrar_estatisticas() {
             switch(linha) {
 
                 case 1:
-                    printf("Partidas jogadas: %s\n", texto);
+                    printf("Partidas jogadas: %s", texto);
                     break;
                 case 2:
-                    printf("Vitórias da equipe A: %s\n", texto);
+                    printf("Vitórias da equipe A: %s", texto);
                     break;
                 case 3:
-                    printf("Vitórias da equipe B: %s\n", texto);
+                    printf("Vitórias da equipe B: %s", texto);
                     break;
                 case 4:
-                    printf("Empates: %s\n", texto);
+                    printf("Empates: %s", texto);
                     break;
                 default:
                     break;

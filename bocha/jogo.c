@@ -23,8 +23,11 @@ int main() {
                 mostrar_estatisticas();
                 start_screen();
                 break;
+            case 3:
+                break;
             default:
                 printf("Opção inválida\n");
+                system("PAUSE");
                 start_screen();
                 break;
         }
