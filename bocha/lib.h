@@ -295,7 +295,7 @@ void lanca_bocha(char jogador, int row, int col) {
     //CAIU EM LUGAR VAZIO
     if(cancha[row][col] == vazio) {
         cancha[row][col] = jogador;
-       colisao_tangente(row, col, 1, 1, 1, 1, 1, 1, 1, 1);
+        colisao_tangente(row, col, 1, 1, 1, 1, 1, 1, 1, 1);
     } else {
         //CAIU EM UMA CASA OCUPADA POR OUTRO OBJETO
         colisao_direta(row, col, jogador);
@@ -601,7 +601,7 @@ void colisao_direta(int row, int col, char jogador) {
                         empurra_baixo(row, col, jogador);
                     }else {
                         /*EMPURRA PRA CIMA*/
-                        for(j = i; j <= row - 2; j++) {
+                        for(j = i; j <= row - 1; j++) {
                             cancha[j][col] = cancha[j + 1][col];
                         }
                         cancha[row][col] = jogador;
@@ -734,13 +734,13 @@ void atualizar_estatisticas(int resultado) {
 
     if( (stats = fopen("stats.txt", "r")) != NULL) {
         fgets(partidas, 6, stats);
-        printf("%s\n", partidas);
+        //printf("%s\n", partidas);
         fgets(vitorias_A, 6, stats);
-        printf("%s\n", vitorias_A);
+        //printf("%s\n", vitorias_A);
         fgets(vitorias_B, 6, stats);
-        printf("%s\n", vitorias_B);
+        //printf("%s\n", vitorias_B);
         fgets(empates, 6, stats);
-        printf("%s\n", empates);
+        //printf("%s\n", empates);
     }
     fclose(stats);
 
