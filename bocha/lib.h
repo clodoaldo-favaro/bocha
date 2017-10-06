@@ -151,10 +151,11 @@ void partida() {
 
         col = alvo[0] - 65;/*COLUNA: CONVERTE LETRA PARA NUMERO INT A = 0, B = 1*/
         if(strlen(alvo) == 3) {
-            row = 0 + (alvo[2] - '0'); /*JA VALIDOU E DEU 10*/
-
+            row = (alvo[2] - '0'); /*JA VALIDOU E DEU 10*/
+            //SE FOR 10, É A LINHA 0
         }else {
             row = TAMANHO - (alvo[1] - '0'); /*LINHA: CONVERTE CARACTERE DIGITO PARA INT '1' = 1*/
+            //EXEMPLO: SE EU QUISER JOGAR NA LINHA 1, NA MATRIZ ELA SERA A LINHA TAMANHO - 1 = 9
 
         }
 
