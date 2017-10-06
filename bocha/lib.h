@@ -216,39 +216,7 @@ char *jogada(char jogador) {
 
 int valida_jogada(char jogada[4]) {
 
-    /*Calcula erro*/
-    int erro, numero;
-    jogada[0] = jogada[0] + calcula_erro(2); /*Calcula erro da coluna*/
-
-    if(strlen(jogada) == 3) {
-
-
-        erro = calcula_erro(1);
-
-        numero = (jogada[1] - '0') * 10 + (jogada[2] - '0') + erro;
-        if(numero < 10) {
-            jogada[2] = '\0';
-            jogada[1] = numero + '0';
-        }
-
-
-
-    }else if(strlen(jogada) == 2) {
-
-
-        erro = calcula_erro(1);
-
-        numero = (jogada[1] - '0') + erro;
-        if(numero < 10) {
-
-            jogada[2] = '\0';
-            jogada[1] = numero + '0';
-
-        }
-    }
-
-
-    /*TESTES*/
+    //TESTES INICIAIS
     if(!isalpha(jogada[0])) {
         printf("%s:  primeiro digito não é letra. Joque novamente.\n", jogada);
         return 0;
@@ -261,10 +229,69 @@ int valida_jogada(char jogada[4]) {
         printf("%s: segundo dígito não é número. Jogue novamente.\n", jogada);
         return 0;
     }
-    if(numero  <= 0 || numero > TAMANHO) {
-        printf("%c%d: jogada fora do limite vertical. Jogue novamente.\n", jogada[0], numero);
-        return 0;
+
+
+    /*Calcula erro*/
+    int erro, numero;
+
+    if(jogada[0] >= 'A' && jogada[0] <= 'A' + TAMANHO - 1) {
+        //COLUNA OK
+        //CALCULAR UM ERRO VÁLIDO
+        erro = calcula_erro(2);
+        while(jogada[0] + erro < 'A' || jogada[0] + erro > 'A' + TAMANHO - 1) {
+            erro = calcula_erro(2);
+        }
+        jogada[0] = jogada[0] + erro;
     }
+
+    if(strlen(jogada) == 3) {
+        //3 caracteres = A10, B10, C10, etc
+
+        erro = calcula_erro(1); //ERRO PARA LINHA
+        numero = (jogada[1] - '0') * 10 + (jogada[2] - '0'); //CONVERTE OS ÚLTIMOS DOIS DÍGITOS EM NÚMERO
+        if(numero  <= 0 || numero > TAMANHO) {
+            printf("%c%d: jogada fora do limite vertical. Jogue novamente.\n", jogada[0], numero);
+            return 0;
+        }
+        //CALCULA ERRO NOVAMENTE ENQUANTO NÃO DER UM RESULTADO VÁLIDO
+        while(numero + erro <= 0 || numero + erro > TAMANHO) {
+            erro = calcula_erro(1);
+        }
+        numero = numero + erro;
+
+        if(numero < 10) {
+            //SE POR UM ACASO O NÚMERO FOR MENOR QUE 0,
+            jogada[2] = '\0';
+            jogada[1] = numero + '0';
+        }
+
+
+
+    }else if(strlen(jogada) == 2) {
+
+
+        erro = calcula_erro(1);
+        numero = (jogada[1] - '0');
+         if(numero  <= 0 || numero > TAMANHO) {
+            printf("%c%d: jogada fora do limite vertical. Jogue novamente.\n", jogada[0], numero);
+            return 0;
+        }
+        while(numero + erro <= 0 || numero + erro > TAMANHO) {
+            erro = calcula_erro(1);
+        }
+        numero = numero + erro;
+
+        if(numero < 10) {
+
+            jogada[2] = '\0';
+            jogada[1] = numero + '0';
+
+        }
+    }
+
+
+
+
 
 
     return 1;
