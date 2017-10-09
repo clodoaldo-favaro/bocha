@@ -435,6 +435,18 @@ void colisao_tangente(int row, int col, int up, int down, int left, int right, i
                 /*MOVER UMA CASA ABAIXO*/
                 cancha[row + 2][col] = cancha[row + 1][col];
                 cancha[row + 1][col] = vazio;
+            }else {
+                i = row + 2;
+                while(cancha[i][col] != vazio && i < TAMANHO) {
+                    i++;
+                }
+                if(i < TAMANHO) {
+                    while(i >= row + 2) {
+                        cancha[i][col] = cancha[i - 1][col];
+                        i--;
+                    }
+                    cancha[i][col] = vazio;
+                }
             }
         }
     }
