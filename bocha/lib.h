@@ -24,6 +24,7 @@ void atualizar_estatisticas(int resultado);
 char cancha[TAMANHO][TAMANHO];
 char alfabeto[TAMANHO];
 char vazio = '-';
+int modo_teste;
 
 
 
@@ -300,6 +301,10 @@ int valida_jogada(char jogada[4]) {
 
 int calcula_erro(int linha_col) {
 
+    if(modo_teste) {
+        return 0;
+    }
+
 
 
     /*linha_col == 1, erro de linha*/
@@ -323,7 +328,10 @@ void lanca_bocha(char jogador, int row, int col) {
     //CAIU EM LUGAR VAZIO
     if(cancha[row][col] == vazio) {
         cancha[row][col] = jogador;
-        colisao_tangente(row, col, 1, 1, 1, 1, 1, 1, 1, 1);
+        if(!modo_teste) {
+            colisao_tangente(row, col, 1, 1, 1, 1, 1, 1, 1, 1);
+        }
+
     } else {
         //CAIU EM UMA CASA OCUPADA POR OUTRO OBJETO
         colisao_direta(row, col, jogador);
@@ -331,7 +339,7 @@ void lanca_bocha(char jogador, int row, int col) {
 }
 
 void colisao_tangente(int row, int col, int up, int down, int left, int right, int left_up, int right_up, int left_down, int right_down) {
-
+    int i, j;
     //VERIFICA ESQUERDA
     //PARA MOVER A BOCHA À ESQUERDA, A BOCHA LANÇADA DEVE TER CAÍDO NA COLUNA 2 OU MAIOR, E A OPCAO LEFT DEVE SER 1
     if(col >= 2 && left) {
@@ -415,7 +423,7 @@ void colisao_tangente(int row, int col, int up, int down, int left, int right, i
     /*---------------------------------------------*/
 
 
-    /*ACIMA-DIREITA*/
+    //ACIMA-DIREITA
     /*CHECAR LIMITE ACIMA-DIREITA DE ONDE CAIU A BOCHA LANÇADA E SE RIGHT UP ESTÁ ATIVADO*/
     if(row >= 2 && col < TAMANHO - 2 && right_up) {
         /*CHECAR SE HÁ UMA BOCHA ACIMA E À DIREITA*/
@@ -426,6 +434,28 @@ void colisao_tangente(int row, int col, int up, int down, int left, int right, i
                 /*MOVER ACIMA E À DIREITA*/
                 cancha[row - 2][col + 2] = cancha[row - 1][col + 1];
                 cancha[row - 1][col + 1] = vazio;
+            }else {
+                //O ESPAÇO NÃO ESTÁ VAZIO, COMEÇAR O LOOP PARA ENCONTRAR O PRIMEIRO ESPAÇO VAZIO
+                //NO SENTIDO DIAGONAL SUPERIOR DIREITO
+                i = row - 2;
+                j = col + 2;
+                while(cancha[i][j] != vazio && i >= 0 && j < TAMANHO) {
+                    //VAI SUBINDO NO SENTIDO DIAGONAL SUPERIOR DIREITO ATÉ ACHAR UM ESPAÇO VAZIO OU ULTRAPASSAR AS BORDAS
+                    i--;
+                    j++;
+                }
+                //Se não ultrapassou as bordas, encontrou um espaço vazio, então é possível deslocar
+                if(i >= 0 && j < TAMANHO) {
+                    //A partir do espaço vazio localizado, copia para o espaço atual o objeto
+                    //contido na posição diagonal inferior esquerda
+                    while(i <= row - 2) {
+                        cancha[i][j] = cancha[i + 1][j - 1];//Uma linha abaixo (i + 1) e uma coluna à esquerda (j - 1)
+                        i++; //Move para a linha abaixo
+                        j--; //Move para a coluna à esquerda
+                    }
+                    //Aqui estamos em i == row - 1, e j = col + 1, local onde a bocha inicial foi deslocada, então aqui será vazio
+                    cancha[i][j] = vazio;
+                }
             }
         }
     }
