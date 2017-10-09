@@ -380,6 +380,19 @@ void colisao_tangente(int row, int col, int up, int down, int left, int right, i
                 /*MOVER UMA CASA À DIREITA*/
                 cancha[row][col + 2] = cancha[row][col + 1];
                 cancha[row][col + 1] = vazio;
+            }else {
+                j = col + 2;
+                //Vai percorrendo à direita até achar um espaço vazio ou passar da da borda
+                while(cancha[row][j] != vazio && j < TAMANHO) {
+                    j++;
+                }
+                if(j < TAMANHO) {
+                    while(j >= col + 2) {
+                        cancha[row][j] = cancha[row][j - 1];
+                        j--;
+                    }
+                    cancha[row][j] = vazio;
+                }
             }
         }
     }
