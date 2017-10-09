@@ -417,6 +417,26 @@ void colisao_tangente(int row, int col, int up, int down, int left, int right, i
                 /*MOVER ACIMA E À ESQUERDA*/
                 cancha[row - 2][col - 2] = cancha[row - 1][col - 1];
                 cancha[row - 1][col - 1] = vazio;
+            }else {
+                //Espaço não está vazio, começar o loop para encontrar o primeiro espaço vazio
+                //acima e à esquerda
+                i = row - 2;
+                j = col - 2;
+                //Vai percorrendo no sentido diagonal superior esquerdo até achar um espaço vazio ou ultrapassar as bordas
+                while(cancha[i][j] != vazio && i >= 0 && j >= 0) {
+                    i--;
+                    j--;
+                }
+                //Se não ultrapassou as bordas, é porque conseguiu encontrar um espaço vazio
+                if(i >= 0 && j >= 0) {
+                    //A partir do espaço vazio encontrado, move o objeto localizado abaixo e à direita
+                    while(i <= row - 2) {
+                        cancha[i][j] = cancha[i + 1][j + 1];
+                        i++;
+                        j++;
+                    }
+                    cancha[i][j] = vazio;
+                }
             }
         }
     }
