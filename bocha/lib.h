@@ -351,6 +351,18 @@ void colisao_tangente(int row, int col, int up, int down, int left, int right, i
                 /*MOVER UMA CASA À ESQUERDA*/
                 cancha[row][col - 2] = cancha[row][col - 1];
                 cancha[row][col - 1] = vazio;
+            }else {
+                j = col - 2;
+                while(cancha[row][j] != vazio && j >= 0) {
+                    j--;
+                }
+                if(j >= 0) {
+                    while(j <= col - 2) {
+                        cancha[row][j] = cancha[row][j + 1];
+                        j++;
+                    }
+                    cancha[row][j] = vazio;
+                }
             }
         }
     }
@@ -768,13 +780,15 @@ void empurra_baixo(int row, int col, char jogador) {
 }
 
 void mostrar_estatisticas() {
-    //ABRE O ARQUIVO PARA LEITURA
+
     FILE *stats;
     int linha = 1;
+    //vetor de caracteres onde será armazenado a string lida do arquivo
     char texto[20];
     //TESTA SE CONSEGUIU ABRIR
     if( (stats = fopen("stats.txt", "r")) != NULL)  {
         system("cls");
+        //Percorre uma linha por vez fgets() lê uma string até achar um caractere de nova linha.
         while(fgets(texto, 19, stats) != NULL) {
             switch(linha) {
 
@@ -807,6 +821,9 @@ void mostrar_estatisticas() {
 }
 
 void atualizar_estatisticas(int resultado) {
+    if(modo_teste) {
+        return;
+    }
     FILE *stats;
     char partidas[5], vitorias_A[5], vitorias_B[5], empates[5];
 
