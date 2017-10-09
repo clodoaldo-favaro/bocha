@@ -517,6 +517,21 @@ void colisao_tangente(int row, int col, int up, int down, int left, int right, i
                 /*MOVER ABAIXO E À ESQUERDA*/
                 cancha[row + 2][col - 2] = cancha[row + 1][col - 1];
                 cancha[row + 1][col - 1] = vazio;
+            }else {
+                i = row + 2;
+                j = col - 2;
+                while(cancha[i][j] != vazio && i < TAMANHO && j >= 0) {
+                    i++;
+                    j--;
+                }
+                if(i < TAMANHO && j >= 0) {
+                    while(i >= row + 2) {
+                        cancha[i][j] = cancha[i - 1][j + 1];
+                        i--;
+                        j++;
+                    }
+                    cancha[i][j] = vazio;
+                }
             }
         }
     }
@@ -534,6 +549,22 @@ void colisao_tangente(int row, int col, int up, int down, int left, int right, i
                 /*MOVER ABAIXO E À DIREITA*/
                 cancha[row + 2][col + 2] = cancha[row + 1][col + 1];
                 cancha[row + 1][col + 1] = vazio;
+            }else {
+                i = row + 2;
+                j = col + 2;
+                while(cancha[i][j] != vazio && i < TAMANHO && j < TAMANHO) {
+                    i++;
+                    j++;
+                }
+                if(i < TAMANHO && j < TAMANHO) {
+                    while(i >= row + 2) {
+                        cancha[i][j] = cancha[i - 1][j - 1];
+                        i--;
+                        j--;
+                    }
+                    cancha[i][j] = vazio;
+                }
+
             }
         }
     }
