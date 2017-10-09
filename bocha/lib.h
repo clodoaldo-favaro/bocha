@@ -328,10 +328,7 @@ void lanca_bocha(char jogador, int row, int col) {
     //CAIU EM LUGAR VAZIO
     if(cancha[row][col] == vazio) {
         cancha[row][col] = jogador;
-        if(!modo_teste) {
-            colisao_tangente(row, col, 1, 1, 1, 1, 1, 1, 1, 1);
-        }
-
+        colisao_tangente(row, col, 1, 1, 1, 1, 1, 1, 1, 1);
     } else {
         //CAIU EM UMA CASA OCUPADA POR OUTRO OBJETO
         colisao_direta(row, col, jogador);
@@ -410,6 +407,18 @@ void colisao_tangente(int row, int col, int up, int down, int left, int right, i
                 /*MOVER UMA CASA ACIMA*/
                 cancha[row - 2][col] = cancha[row - 1][col];
                 cancha[row - 1][col]= vazio;
+            }else {
+                i = row - 2;
+                while(cancha[i][col] != vazio && i >= 0) {
+                    i--;
+                }
+                if(i >= 0) {
+                    while(i <= row - 2) {
+                        cancha[i][col] = cancha[i + 1][col];
+                        i++;
+                    }
+                    cancha[i][col] = vazio;
+                }
             }
         }
     }
